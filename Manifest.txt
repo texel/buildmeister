@@ -1,0 +1,7 @@
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/buildmeister
+lib/buildmeister.rb
+test/test_buildmeister.rb
