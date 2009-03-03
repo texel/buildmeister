@@ -1,4 +1,6 @@
-require  File.expand_path(File.dirname(__FILE__) + "/buildmeister")
+#!/usr/bin/env ruby
+
+require  File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
 require 'activesupport'
 
 puts "Starting up BuildMeister..."
@@ -7,7 +9,18 @@ puts "Starting up BuildMeister..."
 
 while true do  
   title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
-  body  = "Ready: #{bm.ready.tickets_count}\nStaged: #{bm.staged.tickets_count}\nVerified: #{bm.verified.tickets_count}"
+  body  = <<eos
+Staging
+---------
+Ready: #{bm.ready.tickets_count}
+Staged: #{bm.staged.tickets_count}
+Verified: #{bm.verified.tickets_count}
+
+Master
+---------
+Ready: #{bm.ready_experimental.tickets_count}
+Staged: #{bm.staged_experimental.tickets_count}
+eos
 
   puts "Updated notification at #{Time.now.strftime("%m/%d %I:%M %p")}"
   

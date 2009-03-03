@@ -5,7 +5,7 @@ class Buildmeister
   VERSION = '1.0.0'
   
   attr_accessor :project, :project_name,
-                :ready, :staged, :verified,
+                :ready, :staged, :verified, :ready_experimental, :staged_experimental,
                 :last_ready, :last_staged, :last_verified
   
   def initialize(project_name)
@@ -18,12 +18,29 @@ class Buildmeister
     self.load_project
   end
   
+  def resolve_verified
+    self.verified.tickets.each do |ticket|
+      ticket.state = 'resolved'
+      ticket.save
+    end
+  end
+  
+  def stage_all
+    self.ready.tickets.each do |ticket|
+      ticket.state = 'staged'
+      ticket.save
+    end
+  end
+  
   def load_project
     bins  = self.get_project.bins
     
     self.ready     = bins.find { |bin| bin.name == 'Ready'     }
     self.staged    = bins.find { |bin| bin.name == 'Staged'    }
     self.verified  = bins.find { |bin| bin.name == 'Verified'  }
+    
+    self.ready_experimental  = bins.find { |bin| bin.name == 'Ready (Experimental)'   }
+    self.staged_experimental = bins.find { |bin| bin.name == 'Staged (Experimental)'  }
   end
   
   def reload_info

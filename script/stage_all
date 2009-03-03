@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require  File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
+require 'activesupport'
+
+bm = Buildmeister.new('Macchiato')
+bm.stage_all
+
+puts 'All ready tickets marked "staged"'
