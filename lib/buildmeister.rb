@@ -2,11 +2,14 @@ require 'rubygems'
 require 'lighthouse'
 
 class Buildmeister
-  VERSION = '1.0.0'
+  VERSION   = '1.0.0'
+  BIN_NAMES = %w(ready staged verified ready_experimental staged_experimental)
   
-  attr_accessor :project, :project_name,
-                :ready, :staged, :verified, :ready_experimental, :staged_experimental,
-                :last_ready, :last_staged, :last_verified
+  attr_accessor :project, :project_name
+  
+  BIN_NAMES.each do |bin_name|
+    attr_accessor :"#{bin_name}", :"last_#{bin_name}"
+  end
   
   def initialize(project_name)
     @config = YAML.load_file(File.expand_path(File.dirname(__FILE__) + '/../config/config.yml'))
@@ -51,21 +54,19 @@ class Buildmeister
   end
   
   def reload_info
-    self.last_ready, self.last_staged, self.last_verified = self.ready.tickets_count, self.staged.tickets_count, self.verified.tickets_count
+    BIN_NAMES.each do |bin_name|
+      send("last_#{bin_name}=", send(bin_name).tickets_count)
+    end
     
     self.load_project
     
-    # %w(ready staged verified).each do |state|
-    #   self.send(state).reload
-    # end
-    
-    self.ready.reload
-    self.staged.reload
-    self.verified.reload
+   BIN_NAMES.each do |state|
+      self.send(state).reload
+    end
   end
   
   def changed?
-    [ready.tickets_count, staged.tickets_count, verified.tickets_count] != [last_ready, last_staged, last_verified]
+    BIN_NAMES.map { |bin_name| self.send(bin_name).tickets_count } != BIN_NAMES.map { |bin_name| send("last_#{bin_name}") }
   end
   
   def get_project

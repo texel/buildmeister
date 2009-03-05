@@ -5,7 +5,7 @@ require 'activesupport'
 
 puts "Starting up BuildMeister..."
 
-def notify
+def notify  
   bm    = Buildmeister.new('Macchiato')
   while true do  
     title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
@@ -25,7 +25,7 @@ eos
     puts "Updated notification at #{Time.now.strftime("%m/%d %I:%M %p")}"
 
     if bm.changed?
-      `growlnotify -s -n "Lighthouse" -a "Lighthouse" -d 'buildmeister' -t "#{title}" -m "#{body}"`    
+      post_notification(title, body)   
     end
 
     sleep 5.minutes.to_i
@@ -50,14 +50,16 @@ def resolve_verified
   puts 'All verified tickets marked "resolved"'
 end
 
-def notify_error(error)
-  title = "Buildmeister Error"
-  body  = error.message
+def post_notification(title, body)
   `growlnotify -s -n "Lighthouse" -a "Lighthouse" -d 'buildmeister' -t "#{title}" -m "#{body}"`
 end
 
 begin
   send ARGV.shift
+rescue Interrupt => i
+  post_notification("Buildmeister Shut Down", "Goodbye!")
+  puts "Thank you for using Buildmeister!"
 rescue Exception => e
-  notify_error(e)
+  post_notification("Buildmeister Error: #{e.class}", e.message)
+  puts "Quitting Buildmeister due to error: #{e.message}"
 end
