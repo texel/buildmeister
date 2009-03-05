@@ -6,7 +6,6 @@ require 'activesupport'
 puts "Starting up BuildMeister..."
 
 def notify
-  raise "OMG!"
   bm    = Buildmeister.new('Macchiato')
   while true do  
     title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
