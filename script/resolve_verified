@@ -1,9 +1,0 @@
-#!/usr/bin/env ruby
-
-require  File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
-require 'activesupport'
-
-bm = Buildmeister.new('Macchiato')
-bm.resolve_verified
-
-puts 'All verified tickets marked "resolved"'

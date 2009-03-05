@@ -18,6 +18,13 @@ class Buildmeister
     self.load_project
   end
   
+  def move_all(bin_name, options)
+    self.send(bin_name).tickets.each do |ticket|
+      ticket.state = options[:to_state]
+      ticket.save
+    end
+  end
+  
   def resolve_verified
     self.verified.tickets.each do |ticket|
       ticket.state = 'resolved'

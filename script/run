@@ -5,11 +5,12 @@ require 'activesupport'
 
 puts "Starting up BuildMeister..."
 
+def notify
+  raise "OMG!"
   bm    = Buildmeister.new('Macchiato')
-
-while true do  
-  title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
-  body  = <<eos
+  while true do  
+    title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
+    body  = <<eos
 Staging
 ---------
 Ready: #{bm.ready.tickets_count}
@@ -22,13 +23,42 @@ Ready: #{bm.ready_experimental.tickets_count}
 Staged: #{bm.staged_experimental.tickets_count}
 eos
 
-  puts "Updated notification at #{Time.now.strftime("%m/%d %I:%M %p")}"
-  
-  if bm.changed?
-    `growlnotify -s -n "Lighthouse" -a "Lighthouse" -d 'buildmeister' -t "#{title}" -m "#{body}"`    
+    puts "Updated notification at #{Time.now.strftime("%m/%d %I:%M %p")}"
+
+    if bm.changed?
+      `growlnotify -s -n "Lighthouse" -a "Lighthouse" -d 'buildmeister' -t "#{title}" -m "#{body}"`    
+    end
+
+    sleep 5.minutes.to_i
+
+    bm.reload_info
   end
-  
-  sleep 5.minutes.to_i
-  
-  bm.reload_info
+end
+
+def stage_all
+  env = ARGV.first
+
+  bm = Buildmeister.new('Macchiato')
+  bm.move_all(["ready", env].compact.join('_'), :to_state => 'staged')
+
+  puts 'All ready tickets marked "staged"'
+end
+
+def resolve_verified
+  bm = Buildmeister.new('Macchiato')
+  bm.resolve_verified
+
+  puts 'All verified tickets marked "resolved"'
+end
+
+def notify_error(error)
+  title = "Buildmeister Error"
+  body  = error.message
+  `growlnotify -s -n "Lighthouse" -a "Lighthouse" -d 'buildmeister' -t "#{title}" -m "#{body}"`
+end
+
+begin
+  self.send ARGV.shift
+rescue Exception => e
+  notify_error(e)
 end
