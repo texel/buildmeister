@@ -57,7 +57,7 @@ def notify_error(error)
 end
 
 begin
-  self.send ARGV.shift
+  send ARGV.shift
 rescue Exception => e
   notify_error(e)
 end
