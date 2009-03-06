@@ -58,7 +58,7 @@ begin
   send ARGV.shift
 rescue Interrupt => i
   post_notification("Buildmeister Shut Down", "Goodbye!")
-  puts "Thank you for using Buildmeister!"
+  puts "\rThank you for using Buildmeister!"
 rescue Exception => e
   post_notification("Buildmeister Error: #{e.class}", e.message)
   puts "Quitting Buildmeister due to error: #{e.message}"
