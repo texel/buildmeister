@@ -1,0 +1,16 @@
+token: Your Lighthouse token
+account: Your Lighthouse account name
+project_name: Your Lighthouse project name
+
+bin_groups:
+  - staging:
+    - Ready
+    - Staged
+    - Verified
+    
+  - master:
+    - Ready (Experimental)
+    - Staged (Experimental)
+    - Verified (Experimental)
+
+notification_interval: 5

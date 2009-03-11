@@ -2,25 +2,42 @@
 
 require 'buildmeister'
 require 'activesupport'
+require 'optparse'
+
+ICON_PATH = File.expand_path(File.dirname(__FILE__) + "/../images/lighthouse_icon.png")
+
+@options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: buildmeister notify"
+  
+  opts.on('-f', '--from-bin BIN_NAME', 'Move From Bin') do |f|
+    @options[:move_from] = f
+  end
+  
+  opts.on('-t', '--to-state STATE', 'Move to State') do |t|
+    @options[:to_state] = t
+  end
+end.parse!
 
 def notify
-  puts "Starting BuildMeister Notify..."  
-  bm    = Buildmeister.new('Macchiato')
+  puts "Starting BuildMeister Notify..."
+  puts @options  
+  bm    = Buildmeister.new
   while true do  
     title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
-    body  = <<eos
-Staging
----------
-Ready: #{bm.ready.tickets_count}
-Staged: #{bm.staged.tickets_count}
-Verified: #{bm.verified.tickets_count}
+     
+    body = ''
+    
+    bm.bin_groups.each do |bin_group|
+      body += "#{bin_group[:name].titleize}\n"
+      body += "---------\n"
 
-Master
----------
-Ready: #{bm.ready_experimental.tickets_count}
-Staged: #{bm.staged_experimental.tickets_count}
-Verified: #{bm.verified_experimental.tickets_count}
-eos
+      bin_group[:bin_names].each do |bin_name|
+        body += "#{bin_name}: #{bm.send(bin_name.normalize).tickets_count}\n"
+      end
+      
+      body += "\n"
+    end
 
     puts "Updated notification at #{Time.now.strftime("%m/%d %I:%M %p")}"
 
@@ -28,30 +45,21 @@ eos
       post_notification(title, body)   
     end
 
-    sleep 5.minutes.to_i
+    sleep bm.notification_interval.minutes.to_i
 
     bm.reload_info
   end
 end
 
-def stage_all
-  env = ARGV.first
-
-  bm = Buildmeister.new('Macchiato')
-  bm.move_all(["ready", env].compact.join('_'), :to_state => 'staged')
-
-  puts 'All ready tickets marked "staged"'
-end
-
-def resolve_verified
-  bm = Buildmeister.new('Macchiato')
-  bm.resolve_verified
-
-  puts 'All verified tickets marked "resolved"'
-end
-
 def post_notification(title, body)
-  `growlnotify -s -n "Lighthouse" -a "Lighthouse" -d 'buildmeister' -t "#{title}" -m "#{body}"`
+  `growlnotify -s -n "Lighthouse" -d "Buildmeister" -I \"#{ICON_PATH}\" -t #{title} -m "#{body}"`
+end
+
+def move_all
+  bm = Buildmeister.new
+  bm.move_all(Buildmeister.normalize_bin_name(@options[:move_from]), :to_state => @options[:to_state])
+  
+  puts "All tickets from bin #{@options[:move_from]} have been moved to #{@options[:to_state]}"
 end
 
 begin
@@ -62,4 +70,5 @@ rescue Interrupt => i
 rescue Exception => e
   post_notification("Buildmeister Error: #{e.class}", e.message)
   puts "Quitting Buildmeister due to error: #{e.message}"
+  puts e.backtrace
 end
