@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'buildmeister'
+#require 'buildmeister'
+require  File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
 require 'activesupport'
 require 'optparse'
 
@@ -21,7 +22,7 @@ end.parse!
 
 def notify
   puts "Starting BuildMeister Notify..."
-  puts @options  
+
   bm    = Buildmeister.new
   while true do  
     title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
