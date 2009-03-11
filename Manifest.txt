@@ -1,9 +1,8 @@
 History.txt
 Manifest.txt
-README.txt
+README.rdoc
 Rakefile
 bin/buildmeister
-config/config.yml
+config/buildmeister_config.sample.yml
 lib/buildmeister.rb
-script/run
 test/test_buildmeister.rb
