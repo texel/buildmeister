@@ -3,5 +3,7 @@ Manifest.txt
 README.txt
 Rakefile
 bin/buildmeister
+config/config.yml
 lib/buildmeister.rb
+script/run
 test/test_buildmeister.rb

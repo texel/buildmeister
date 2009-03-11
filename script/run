@@ -20,6 +20,7 @@ Master
 ---------
 Ready: #{bm.ready_experimental.tickets_count}
 Staged: #{bm.staged_experimental.tickets_count}
+Verified: #{bm.verified_experimental.tickets_count}
 eos
 
     puts "Updated notification at #{Time.now.strftime("%m/%d %I:%M %p")}"

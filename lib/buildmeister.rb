@@ -3,7 +3,7 @@ require 'lighthouse'
 
 class Buildmeister
   VERSION   = '1.0.0'
-  BIN_NAMES = %w(ready staged verified ready_experimental staged_experimental)
+  BIN_NAMES = %w(ready staged verified ready_experimental staged_experimental verified_experimental)
   
   attr_accessor :project, :project_name
   
@@ -12,7 +12,7 @@ class Buildmeister
   end
   
   def initialize(project_name)
-    @config = YAML.load_file(File.expand_path(File.dirname(__FILE__) + '/../config/config.yml'))
+    @config = YAML.load_file(File.expand_path(File.dirname(__FILE__) + '~/.buildmeister_config.yml'))
     Lighthouse.account = @config['account']
     Lighthouse.token   = @config['token']
     self.project_name = project_name
@@ -49,8 +49,9 @@ class Buildmeister
     self.staged    = bins.find { |bin| bin.name == 'Staged'    }
     self.verified  = bins.find { |bin| bin.name == 'Verified'  }
     
-    self.ready_experimental  = bins.find { |bin| bin.name == 'Ready (Experimental)'   }
-    self.staged_experimental = bins.find { |bin| bin.name == 'Staged (Experimental)'  }
+    self.ready_experimental     = bins.find { |bin| bin.name == 'Ready (Experimental)'   }
+    self.staged_experimental    = bins.find { |bin| bin.name == 'Staged (Experimental)'  }
+    self.verified_experimental  = bins.find { |bin| bin.name == 'Verified (Experimental)'  }
   end
   
   def reload_info
