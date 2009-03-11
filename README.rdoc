@@ -1,26 +1,30 @@
 = buildmeister
 
-* FIX (url)
+Managing your build process is fun and easy!
 
 == DESCRIPTION:
 
-FIX (describe your package)
+Buildmeister provides some simple utilities for managing a small team's build process
+using Lighthouse and Github.
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
+- Growl notification of updated build status
+- Utility scripts to move batch move tickets
+- TODO: Push all project-specific info into the config file
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+  TODO: Describe notify, stage_all, resolve_all, etc.
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+Depends on Caged-lighthouse-api and growlnotify.
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+Download and install Growl from http://growl.info/
+sudo gem install texel-buildmeister
 
 == LICENSE:
 
