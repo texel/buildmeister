@@ -1,30 +1,34 @@
-= buildmeister
+= Buildmeister
 
 Managing your build process is fun and easy!
 
-== DESCRIPTION:
+== Description
 
 Buildmeister provides some simple utilities for managing a small team's build process
 using Lighthouse and Github.
 
-== FEATURES/PROBLEMS:
+== Features
 
 - Growl notification of updated build status
 - Utility scripts to move batch move tickets
-- TODO: Push all project-specific info into the config file
 
-== SYNOPSIS:
-
-  TODO: Describe notify, stage_all, resolve_all, etc.
+== Examples
+  # To start periodically updated growl notifications...
+  $ buildmaster notify
+  
+  # To move all tickets in a bin to a particular state...
+  $ buildmaster move_all --from-bin "Staged" --to-state "verified"
 
 == REQUIREMENTS:
 
-Depends on Caged-lighthouse-api and growlnotify.
+Depends on Caged-lighthouse-api, activesupport, and growlnotify.
 
 == INSTALL:
 
-Download and install Growl from http://growl.info/
-sudo gem install texel-buildmeister
+- Download and install Growl from http://growl.info/
+- sudo gem install texel-buildmeister
+- Use the included config/config.sample.yml file as a guide to creating your own configuration file.
+The file should be called ".buildmeister_config.yml", and be placed in your home directory.
 
 == LICENSE:
 
