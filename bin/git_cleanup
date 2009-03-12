@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'lighthouse'
+require 'optparse'
+require File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
+
+@config = Buildmeister.load_config
+
+def get_project(name)
+  projects = Lighthouse::Project.find(:all)
+  project  = projects.find {|pr| pr.name == name}
+end
+
+def prune_these(local_or_remote, branches)
+  project = get_project(@config['project'])
+  
+  branches.each do |branch|
+    puts "#{branch} (updated #{`git show #{branch} HEAD --pretty=format:%ar`.split("\n")[0]})"
+    puts get_lighthouse_status(branch, project)
+    print "keep [return], delete [d]: "
+    user_input = gets
+    user_input.strip!
+    
+    case user_input
+    when 'd'
+      send "delete_#{local_or_remote}", branch
+    end
+    
+    puts "\n"
+  end
+end
+
+def delete_local(branch)
+  `git branch -D #{branch}`
+end
+
+def delete_remote(branch)
+  branch = branch.gsub('origin/', '')
+  `git push origin :#{branch}`
+  `git remote prune origin`
+end
+
+def get_lighthouse_status(branch, project)
+  lighthouse_id = 
+    (matches = branch.match(/(\d{4})/)) ? matches[0] : nil
+  
+  if lighthouse_id
+    tickets = project.tickets :q => lighthouse_id
+    ticket  = tickets.first
+    return "Lighthouse Info:\nTicket ##{lighthouse_id} state - #{ticket.state}" if ticket
+  end
+  
+  "No Lighthouse Info."
+end
+
+Lighthouse.token    = @config['token']
+Lighthouse.account  = @config['account']
+
+branches = `git branch -a`.split.reject { |name| name == "*"}
+
+local_branches = branches.select do |branch|
+  !(branch =~ /^origin/)
+end
+
+remote_branches = branches.select do |branch|
+  !local_branches.include?(branch)
+end
+
+local_or_remote = ARGV.shift
+
+if local_or_remote == 'local'
+  prune_these(local_or_remote, local_branches)
+else
+  prune_these(local_or_remote, remote_branches)
+end

@@ -3,6 +3,7 @@ Manifest.txt
 README.rdoc
 Rakefile
 bin/buildmeister
+bin/git_cleanup
 config/buildmeister_config.sample.yml
 lib/buildmeister.rb
 test/test_buildmeister.rb

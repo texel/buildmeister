@@ -1,75 +1,14 @@
 #!/usr/bin/env ruby
 
-#require 'buildmeister'
-require  File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
-require 'activesupport'
-require 'optparse'
-
-ICON_PATH = File.expand_path(File.dirname(__FILE__) + "/../images/lighthouse_icon.png")
-
-@options = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: buildmeister notify"
-  
-  opts.on('-f', '--from-bin BIN_NAME', 'Move From Bin') do |f|
-    @options[:move_from] = f
-  end
-  
-  opts.on('-t', '--to-state STATE', 'Move to State') do |t|
-    @options[:to_state] = t
-  end
-end.parse!
-
-def notify
-  puts "Starting BuildMeister Notify..."
-
-  bm    = Buildmeister.new
-  while true do  
-    title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
-     
-    body = ''
-    
-    bm.bin_groups.each do |bin_group|
-      body += "#{bin_group[:name].titleize}\n"
-      body += "---------\n"
-
-      bin_group[:bin_names].each do |bin_name|
-        body += "#{bin_name}: #{bm.send(bin_name.normalize).tickets_count}\n"
-      end
-      
-      body += "\n"
-    end
-
-    puts "Updated notification at #{Time.now.strftime("%m/%d %I:%M %p")}"
-
-    if bm.changed?
-      post_notification(title, body)   
-    end
-
-    sleep bm.notification_interval.minutes.to_i
-
-    bm.reload_info
-  end
-end
-
-def post_notification(title, body)
-  `growlnotify -s -n "Lighthouse" -d "Buildmeister" -I \"#{ICON_PATH}\" -t #{title} -m "#{body}"`
-end
-
-def move_all
-  bm = Buildmeister.new
-  bm.move_all(Buildmeister.normalize_bin_name(@options[:move_from]), :to_state => @options[:to_state])
-  
-  puts "All tickets from bin #{@options[:move_from]} have been moved to #{@options[:to_state]}"
-end
+require File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
 
 begin
-  send ARGV.shift
+  Buildmeister.new.send ARGV.shift
 rescue Interrupt => i
-  post_notification("Buildmeister Shut Down", "Goodbye!")
+  Buildmeister.post_notification("Buildmeister Shut Down", "Goodbye!")
   puts "\rThank you for using Buildmeister!"
 rescue Exception => e
-  post_notification("Buildmeister Error: #{e.class}", e.message)
+  Buildmeister.post_notification("Buildmeister Error: #{e.class}", e.message)
   puts "Quitting Buildmeister due to error: #{e.message}"
   puts e.backtrace
 end

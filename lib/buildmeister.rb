@@ -1,11 +1,28 @@
 require 'rubygems'
 require 'lighthouse'
+require 'activesupport'
+require 'optparse'
 
 class Buildmeister
+  ICON_PATH = File.expand_path(File.dirname(__FILE__) + "/../images/lighthouse_icon.png")
+  
   attr_accessor :project, :project_name, :bin_groups, :notification_interval
   
   def initialize
-    @config = YAML.load_file(File.expand_path('~/.buildmeister_config.yml'))
+    @options = {}
+    OptionParser.new do |opts|
+      opts.banner = "Usage: buildmeister notify"
+
+      opts.on('-f', '--from-bin BIN_NAME', 'Move From Bin') do |f|
+        @options[:move_from] = f
+      end
+
+      opts.on('-t', '--to-state STATE', 'Move to State') do |t|
+        @options[:to_state] = t
+      end
+    end.parse!
+    
+    @config = Buildmeister.load_config
     Lighthouse.account  = @config['account']
     Lighthouse.token    = @config['token']
     
@@ -43,11 +60,14 @@ class Buildmeister
     self.load_project
   end
   
-  def move_all(bin_name, options)
+  def move_all
+    bin_name = Buildmeister.normalize_bin_name @options[:move_from]
     self.send(bin_name).tickets.each do |ticket|
-      ticket.state = options[:to_state]
+      ticket.state = @options[:to_state]
       ticket.save
     end
+    
+    puts "All tickets from bin #{@options[:move_from]} have been moved to #{@options[:to_state]}"
   end
   
   def resolve_verified
@@ -103,7 +123,54 @@ class Buildmeister
     self.project  = projects.find {|pr| pr.name == project_name}
   end
   
+  def notify
+    puts "Starting BuildMeister Notify..."
+
+    while true do  
+      title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
+
+      body = ''
+
+      bin_groups.each do |bin_group|
+        body += "#{bin_group[:name].titleize}\n"
+        body += "---------\n"
+
+        bin_group[:bin_names].each do |bin_name|
+          body += "#{bin_name}: #{send(bin_name.normalize).tickets_count}\n"
+        end
+
+        body += "\n"
+      end
+
+      puts "Updated notification at #{Time.now.strftime("%m/%d %I:%M %p")}"
+
+      if changed?
+        Buildmeister.post_notification(title, body)   
+      end
+
+      sleep notification_interval.minutes.to_i
+
+      reload_info
+    end
+  end
+  
+  def git_cleanup
+    
+  end
+  
+  # -----------------------------------------
+  # Class Methods
+  # -----------------------------------------
+  
+  def self.post_notification(title, body)
+    `growlnotify -s -n "Buildmeister" -d "Buildmeister" -I \"#{ICON_PATH}\" -t #{title} -m "#{body}"`
+  end
+  
   def self.normalize_bin_name(bin_name)
     bin_name.squeeze(' ').gsub(' ', '_').gsub(/\W/, '').downcase
+  end
+  
+  def self.load_config
+    YAML.load_file(File.expand_path('~/.buildmeister_config.yml'))
   end
 end
