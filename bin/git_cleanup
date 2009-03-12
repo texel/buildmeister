@@ -47,7 +47,7 @@ end
 
 def get_lighthouse_status(branch, project)
   lighthouse_id = 
-    (matches = branch.match(/(\d{4})/)) ? matches[0] : nil
+    (matches = branch.match(/^(\d{4})/)) ? matches[0] : nil
   
   if lighthouse_id
     tickets = project.tickets :q => lighthouse_id
