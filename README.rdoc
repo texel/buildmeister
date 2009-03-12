@@ -11,26 +11,37 @@ using Lighthouse and Github.
 
 - Growl notification of updated build status
 - Utility scripts to move batch move tickets
+- A very handy utility for pruning local and remote git branches
 
 == Examples
   # To start periodically updated growl notifications...
-  $ buildmaster notify
+  $ buildmeister notify
   
   # To move all tickets in a bin to a particular state...
-  $ buildmaster move_all --from-bin "Staged" --to-state "verified"
+  $ buildmeister move_all --from-bin "Staged" --to-state "verified"
+  
+  # Clean up local git branches
+  $ git_cleanup local
+  
+  # Clean up git branches on origin
+  $ git_cleanup remote
 
-== REQUIREMENTS:
+== Requirements
 
 Depends on Caged-lighthouse-api, activesupport, and growlnotify.
 
-== INSTALL:
+== Install
 
 - Download and install Growl from http://growl.info/
 - sudo gem install texel-buildmeister
 - Use the included config/config.sample.yml file as a guide to creating your own configuration file.
 The file should be called ".buildmeister_config.yml", and be placed in your home directory.
 
-== LICENSE:
+== TODO
+  
+- Generalize remote git cleanup so that it doesn't explicitly refer to origin
+
+== License
 
 (The MIT License)
 

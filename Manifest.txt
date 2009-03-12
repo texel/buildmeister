@@ -7,3 +7,4 @@ bin/git_cleanup
 config/buildmeister_config.sample.yml
 lib/buildmeister.rb
 test/test_buildmeister.rb
+images/lighthouse_icon.png
