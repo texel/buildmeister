@@ -17,7 +17,11 @@ def prune_these(local_or_remote, branches)
   
   branches.each do |branch|
     puts "#{branch} (updated #{`git show #{branch} HEAD --pretty=format:%ar`.split("\n")[0]})"
-    puts get_lighthouse_status(branch, project)
+    
+    if project
+      puts get_lighthouse_status(branch, project)
+    end
+    
     print "keep [return], delete [d]: "
     user_input = gets
     user_input.strip!
