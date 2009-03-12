@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{buildmeister}
-  s.version = "0.6.2"
+  s.version = "0.6.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leigh Caplan"]
@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.email = ["lcaplan@onehub.com"]
   s.executables = ["buildmeister", "git_cleanup"]
   s.extra_rdoc_files = ["History.txt", "Manifest.txt", "README.rdoc"]
-  s.files = ["History.txt", "Manifest.txt", "README.rdoc", "Rakefile", "bin/buildmeister", "images/lighthouse_icon.png", "bin/git_cleanup", "config/buildmeister_config.sample.yml", "lib/buildmeister.rb", "test/test_buildmeister.rb"]
+  s.files = ["History.txt", "Manifest.txt", "README.rdoc", "Rakefile", "bin/buildmeister", "bin/git_cleanup", "config/buildmeister_config.sample.yml", "lib/buildmeister.rb", "test/test_buildmeister.rb"]
   s.has_rdoc = true
   s.homepage = %q{FIX (url)}
   s.rdoc_options = ["--main", "README.txt"]

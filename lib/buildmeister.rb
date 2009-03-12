@@ -4,8 +4,6 @@ require 'activesupport'
 require 'optparse'
 
 class Buildmeister
-  ICON_PATH = File.expand_path(File.dirname(__FILE__) + "/../images/lighthouse_icon.png")
-  
   attr_accessor :project, :project_name, :bin_groups, :notification_interval
   
   def initialize
@@ -163,7 +161,7 @@ class Buildmeister
   # -----------------------------------------
   
   def self.post_notification(title, body)
-    `growlnotify -s -n "Buildmeister" -d "Buildmeister" -I \"#{ICON_PATH}\" -t #{title} -m "#{body}"`
+    `growlnotify -s -n "Buildmeister" -d "Buildmeister" -t #{title} -m "#{body}"`
   end
   
   def self.normalize_bin_name(bin_name)
