@@ -40,6 +40,7 @@ The file should be called ".buildmeister_config.yml", and be placed in your home
 == TODO
   
 - Generalize remote git cleanup so that it doesn't explicitly refer to origin
+- Break Lighthouse Utilities out into their own gem
 
 == License
 
