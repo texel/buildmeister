@@ -34,7 +34,7 @@ Depends on Caged-lighthouse-api, activesupport, and growlnotify.
 
 - Download and install Growl from http://growl.info/
 - sudo gem install texel-buildmeister
-- Use the included config/config.sample.yml file as a guide to creating your own configuration file.
+- Use the included config/buildmeister_config.sample.yml file as a guide to creating your own configuration file.
 The file should be called ".buildmeister_config.yml", and be placed in your home directory.
 
 == TODO
