@@ -18,6 +18,10 @@ class Buildmeister
       opts.on('-t', '--to-state STATE', 'Move to State') do |t|
         @options[:to_state] = t
       end
+      
+      opts.on('-v', '--verbose', 'Verbose') do |t|
+        @options[:verbose] = true
+      end
     end.parse!
     
     @config = Buildmeister.load_config
@@ -134,7 +138,12 @@ class Buildmeister
         body += "---------\n"
 
         bin_group[:bin_names].each do |bin_name|
-          body += "#{bin_name}: #{send(bin_name.normalize).tickets_count}\n"
+          if @options[:verbose]
+            display_value = send(bin_name.normalize).tickets.map(&:id).join(", ")
+          else
+            display_value = send(bin_name.normalize).tickets_count
+          end
+          body += "#{bin_name}: #{display_value}\n"
         end
 
         body += "\n"
