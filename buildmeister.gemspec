@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{buildmeister}
-  s.version = "0.6.4"
+  s.version = "0.6.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leigh Caplan"]
@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.test_files = ["test/test_buildmeister.rb"]
 
   s.add_dependency('activesupport', [">= 2.0.0"])
-  s.add_dependency('Caged-lighthouse-api', [">= 1.0.0"])
+  s.add_dependency('texel-lighthouse-api', [">= 1.0.1"])
   
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
