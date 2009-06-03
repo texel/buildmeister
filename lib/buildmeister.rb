@@ -59,7 +59,7 @@ class Buildmeister
       end
     end
         
-    self.load_project
+    load_project
   end
   
   def move_all
@@ -98,7 +98,7 @@ class Buildmeister
   
   def reload_info
     bin_names.each do |bin_name|
-      send("last_#{bin_name.normalize}=", send(bin_name.normalize).tickets_count)
+      send("last_#{bin_name.normalize}=", display_value(bin_name))
     end
 
     self.load_project
@@ -117,7 +117,7 @@ class Buildmeister
   end
   
   def changed?
-    bin_names.map { |bin_name| self.send(bin_name.normalize).tickets_count } != bin_names.map { |bin_name| send("last_#{bin_name.normalize}") }
+    bin_names.map { |bin_name| display_value(bin_name) } != bin_names.map { |bin_name| send("last_#{bin_name.normalize}") }
   end
   
   def get_project
@@ -128,7 +128,7 @@ class Buildmeister
   def notify
     puts "Starting BuildMeister Notify..."
 
-    while true do  
+    loop do  
       title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
 
       body = ''
@@ -138,12 +138,7 @@ class Buildmeister
         body += "---------\n"
 
         bin_group[:bin_names].each do |bin_name|
-          if @options[:verbose]
-            display_value = send(bin_name.normalize).tickets.map(&:id).join(", ")
-          else
-            display_value = send(bin_name.normalize).tickets_count
-          end
-          body += "#{bin_name}: #{display_value}\n"
+          body += "#{bin_name}: #{display_value(bin_name)}\n"
         end
 
         body += "\n"
@@ -156,8 +151,16 @@ class Buildmeister
       end
 
       sleep notification_interval.minutes.to_i
-
+      
       reload_info
+    end
+  end
+  
+  def display_value(bin_name)
+    if @options[:verbose]
+      send(bin_name.normalize).tickets.map(&:id).join(", ")
+    else
+      send(bin_name.normalize).tickets_count
     end
   end
   
