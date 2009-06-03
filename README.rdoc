@@ -28,7 +28,7 @@ using Lighthouse and Github.
 
 == Requirements
 
-Depends on Caged-lighthouse-api, activesupport, and growlnotify.
+Depends on texel-lighthouse-api, activesupport, and growlnotify.
 
 == Install
 
