@@ -61,7 +61,7 @@ end
 Lighthouse.token    = @config['token']
 Lighthouse.account  = @config['account']
 
-branches = `git branch -a`.split.reject { |name| name == "*"}
+branches = `git branch -a`.split.reject { |name| name == "*" }
 
 local_branches = branches.select do |branch|
   !(branch =~ /^origin/)

@@ -62,6 +62,48 @@ class Buildmeister
     load_project
   end
   
+  def new_hotfix
+    branches = local_branches
+    now      = Time.now
+    count    = 1
+    
+    loop do
+      new_branch_name = "hotfix-#{now.year}-#{now.month.to_s.rjust 2, '0'}-#{now.day.to_s.rjust 2, '0'}-#{count.to_s.rjust 3, '0'}"
+      unless branches.include? new_branch_name
+        `git checkout -b #{new_branch_name}`
+        puts "Created #{new_branch_name}"
+        return true
+      end
+      
+      count += 1
+    end
+  end
+  
+  def pull_bin(bin_name = ARGV.shift)    
+    raise ArgumentError, "#{bin_name} is not a valid bin! Must be in #{bin_names.join(', ')}" unless bin_names.include?(bin_name)
+    
+    `git fetch origin`
+    
+    branches        = remote_branches
+    ticket_numbers  = send(Buildmeister.normalize_bin_name(bin_name)).tickets.map { |tkt| tkt.id.to_s }
+    
+    branches_to_pull = branches.select do |branch_name|
+      ticket_numbers.map { |tkt_number| branch_name =~ /#{tkt_number}/ }.any?
+    end
+    
+    branches_to_pull.each do |branch|
+      `git pull origin #{branch.gsub("origin/", "")}`
+    end
+  end
+  
+  def local_branches
+    `git branch`.split.reject { |name| name == "*" }
+  end
+  
+  def remote_branches
+    `git branch -a`.split.reject { |name| name == "*" }
+  end
+  
   def move_all
     bin_name = Buildmeister.normalize_bin_name @options[:move_from]
     self.send(bin_name).tickets.each do |ticket|
