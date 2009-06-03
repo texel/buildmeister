@@ -92,6 +92,10 @@ class Buildmeister
     self.bin_groups.each do |bin_group|
       bin_group[:bin_names].each do |bin_name|
         self.send("#{bin_name.normalize}=", bins.find { |bin| bin.name == bin_name })
+        
+        class << self.send("#{bin_name.normalize}")
+          attr_accessor :display_value
+        end
       end
     end
   end
@@ -102,10 +106,6 @@ class Buildmeister
     end
 
     self.load_project
-    
-    bin_names.each do |bin_name|
-      self.send(bin_name.normalize).reload
-    end
   end
   
   def bin_names
@@ -121,8 +121,7 @@ class Buildmeister
   end
   
   def get_project
-    projects = Lighthouse::Project.find(:all)
-    self.project  = projects.find {|pr| pr.name == project_name}
+    self.project ||= Lighthouse::Project.find(:all).find {|pr| pr.name == project_name}
   end
   
   def notify
@@ -157,11 +156,15 @@ class Buildmeister
   end
   
   def display_value(bin_name)
-    if @options[:verbose]
-      send(bin_name.normalize).tickets.map(&:id).join(", ")
-    else
-      send(bin_name.normalize).tickets_count
-    end
+    # We're memoizing the display value on the bin objects
+    # so that when it comes time to reload, the previous value
+    # is kept.
+    send(bin_name.normalize).display_value ||=
+      if @options[:verbose]
+        send(bin_name.normalize).tickets.map(&:id).join(", ")
+      else
+        send(bin_name.normalize).tickets_count
+      end
   end
   
   def git_cleanup
