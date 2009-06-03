@@ -62,6 +62,10 @@ class Buildmeister
     load_project
   end
   
+  def normalize(bin_name)
+    Buildmeister.normalize_bin_name(bin_name)
+  end
+  
   def new_hotfix
     branches = local_branches
     now      = Time.now
@@ -79,13 +83,16 @@ class Buildmeister
     end
   end
   
-  def pull_bin(bin_name = ARGV.shift)    
-    raise ArgumentError, "#{bin_name} is not a valid bin! Must be in #{bin_names.join(', ')}" unless bin_names.include?(bin_name)
+  def pull_bin(bin_name = ARGV.shift)
+    bin_name            = normalize(bin_name)
+    existing_bin_names  = bin_names.map { |b| b.normalize }
+    
+    raise ArgumentError, "#{bin_name} is not a valid bin! Must be in #{bin_names.join(', ')}" unless existing_bin_names.include?(bin_name)
     
     `git fetch origin`
     
     branches        = remote_branches
-    ticket_numbers  = send(Buildmeister.normalize_bin_name(bin_name)).tickets.map { |tkt| tkt.id.to_s }
+    ticket_numbers  = send(normalize(bin_name)).tickets.map { |tkt| tkt.id.to_s }
     
     branches_to_pull = branches.select do |branch_name|
       ticket_numbers.map { |tkt_number| branch_name =~ /#{tkt_number}/ }.any?
@@ -105,7 +112,7 @@ class Buildmeister
   end
   
   def move_all
-    bin_name = Buildmeister.normalize_bin_name @options[:move_from]
+    bin_name = normalize @options[:move_from]
     self.send(bin_name).tickets.each do |ticket|
       ticket.state = @options[:to_state]
       ticket.save
