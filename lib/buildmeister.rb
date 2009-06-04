@@ -111,6 +111,12 @@ class Buildmeister
     `git branch -a`.split.reject { |name| name == "*" }
   end
   
+  def current_branch
+    branches = `git branch`.split
+    i = branches.index "*"
+    branches[i + 1]
+  end
+  
   def move_all
     bin_name = normalize @options[:move_from]
     self.send(bin_name).tickets.each do |ticket|
@@ -119,6 +125,29 @@ class Buildmeister
     end
     
     puts "All tickets from bin #{@options[:move_from]} have been moved to #{@options[:to_state]}"
+  end
+  
+  def bin_group_report(bin_group_name = normalize(ARGV.shift))
+    bin_group = bin_groups.find { |group| group[:name] == bin_group_name }
+    bin_names = bin_group[:bin_names].map &:normalize
+    
+    ticket_numbers = bin_names.map do |bin_name|
+      send(normalize(bin_name)).tickets.map &:id
+    end.flatten
+    
+    # Pluck the relevant branch names using git...
+    relevant_branches = 
+      remote_branches.select do |branch_name|
+        ticket_numbers.map { |tkt_number| branch_name =~ /#{tkt_number}/ }.any?
+      end.map { |b| b.gsub('origin/', '') }
+      
+    output = ""
+    output << "#{current_branch}\n"
+    relevant_branches.each do |branch|
+      output << "\n#{branch}"
+    end
+    
+    puts output
   end
   
   def resolve_verified
