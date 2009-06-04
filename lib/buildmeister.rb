@@ -99,7 +99,8 @@ class Buildmeister
     end
     
     branches_to_pull.each do |branch|
-      `git pull origin #{branch.gsub("origin/", "")}`
+      result = `git pull origin #{branch.gsub("origin/", "")}`
+      puts result
     end
   end
   
