@@ -109,7 +109,7 @@ class Buildmeister
   end
   
   def remote_branches
-    `git branch -a`.split.reject { |name| name == "*" }
+    `git branch -r`.split.reject { |name| name == "*" }
   end
   
   def current_branch
