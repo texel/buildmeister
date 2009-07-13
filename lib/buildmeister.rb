@@ -255,7 +255,7 @@ class Buildmeister
   # -----------------------------------------
   
   def self.post_notification(title, body)
-    `growlnotify -s -n "Buildmeister" -d "Buildmeister" -t #{title} -m "#{body}"`
+    `growlnotify -H localhost -s -n "Buildmeister" -d "Buildmeister" -t #{title} -m "#{body}"`
   end
   
   def self.normalize_bin_name(bin_name)
