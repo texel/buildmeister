@@ -6,4 +6,5 @@ bin/buildmeister
 bin/git_cleanup
 config/buildmeister_config.sample.yml
 lib/buildmeister.rb
+lib/git_cleanup.rb
 test/test_buildmeister.rb

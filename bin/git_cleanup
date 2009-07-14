@@ -1,80 +1,12 @@
 #!/usr/bin/env ruby
 
-require 'rubygems'
-require 'lighthouse'
-require 'optparse'
-require File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
+require File.expand_path(File.dirname(__FILE__) + "/../lib/git_cleanup")
 
-@config = Buildmeister.load_config
-
-def get_project(name)
-  projects = Lighthouse::Project.find(:all)
-  project  = projects.find {|pr| pr.name == name}
-end
-
-def prune_these(local_or_remote, branches)
-  project = get_project(@config['project_name'])
-  
-  branches.each do |branch|
-    puts "#{branch} (updated #{`git show #{branch} HEAD --pretty=format:%ar`.split("\n")[0]})"
-    
-    if project
-      puts get_lighthouse_status(branch, project)
-    end
-    
-    print "keep [return], delete [d]: "
-    user_input = gets
-    user_input.strip!
-    
-    case user_input
-    when 'd'
-      send "delete_#{local_or_remote}", branch
-    end
-    
-    puts "\n"
-  end
-end
-
-def delete_local(branch)
-  `git branch -D #{branch}`
-end
-
-def delete_remote(branch)
-  branch = branch.gsub('origin/', '')
-  `git push origin :#{branch}`
-  `git remote prune origin`
-end
-
-def get_lighthouse_status(branch, project)
-  lighthouse_id = 
-    (matches = branch.match(/(^|\/)(\d+)-/)) ? matches[1] : nil
-  
-  if lighthouse_id
-    tickets = project.tickets :q => lighthouse_id
-    ticket  = tickets.first
-    return "Lighthouse Info:\nTicket ##{lighthouse_id} state - #{ticket.state}" if ticket
-  end
-  
-  "No Lighthouse Info."
-end
-
-Lighthouse.token    = @config['token']
-Lighthouse.account  = @config['account']
-
-branches = `git branch -a`.split.reject { |name| name == "*" }
-
-local_branches = branches.select do |branch|
-  !(branch =~ /^origin/)
-end
-
-remote_branches = branches.select do |branch|
-  !local_branches.include?(branch)
-end
-
-local_or_remote = ARGV.shift
-
-if local_or_remote == 'local'
-  prune_these(local_or_remote, local_branches)
-else
-  prune_these(local_or_remote, remote_branches)
+begin
+  GitCleanup.new.cleanup
+rescue Interrupt => i
+  puts "\rThank you for using Git Cleanup!"
+rescue Exception => e
+  puts "Quitting Git Cleanup due to error: #{e.message}"
+  puts e.backtrace
 end
