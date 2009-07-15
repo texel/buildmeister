@@ -91,7 +91,7 @@ class GitCleanup
         "%aD"
       end
       
-    `git show #{branch_info.string} --pretty=format:#{format_string}`.split("\n")[0]
+    `git show --pretty=format:#{format_string} #{branch_info.string}`.split("\n")[0]
   end
   
   # git_cleanup --before 1.month.ago
