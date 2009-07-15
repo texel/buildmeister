@@ -82,15 +82,7 @@ class GitCleanup
     end
   end
   
-  def branch_modified(branch_info, format = :time_ago_in_words)
-    head =
-      case branch_info.local_or_remote
-      when 'remote'
-        'HEAD'
-      else
-        ''
-      end
-      
+  def branch_modified(branch_info, format = :time_ago_in_words)      
     format_string =
       case format
       when :time_ago_in_words
@@ -99,7 +91,7 @@ class GitCleanup
         "%aD"
       end
       
-    `git show #{branch_info.string} #{head} --pretty=format:#{format_string}`.split("\n")[0]
+    `git show #{branch_info.string} --pretty=format:#{format_string}`.split("\n")[0]
   end
   
   # git_cleanup --before 1.month.ago
