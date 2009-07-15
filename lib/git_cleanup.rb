@@ -51,9 +51,9 @@ class GitCleanup
     project = get_project(@config['project_name'])
 
     branches.each do |branch|
-      branch_info = OpenStruct.new(:string => branch)
+      branch_info = OpenStruct.new(:string => branch, :local_or_remote => local_or_remote)
       
-      puts "#{branch_info.string} (updated #{`git show #{branch_info.string} HEAD --pretty=format:%ar`.split("\n")[0]})"
+      puts "#{branch_info.string} (updated #{branch_modified(branch_info, :time_ago_in_words)})"
 
       if project
         get_lighthouse_status(branch_info, project)
@@ -82,10 +82,32 @@ class GitCleanup
     end
   end
   
+  def branch_modified(branch_info, format = :time_ago_in_words)
+    head =
+      case branch_info.local_or_remote
+      when 'remote'
+        'HEAD'
+      else
+        ''
+      end
+      
+    format_string =
+      case format
+      when :time_ago_in_words
+        "%ar"
+      when :absolute
+        "%aD"
+      end
+      
+    `git show #{branch_info.string} #{head} --pretty=format:#{format_string}`.split("\n")[0]
+  end
+  
   # git_cleanup --before 1.month.ago
   def match_before(branch_info, date)
-    last_updated = Time.parse(`git show #{branch_info.string} HEAD --pretty=format:%aD`.split("\n")[0])
+    last_updated = Time.parse(branch_modified(branch_info, :absolute))
     last_updated < date
+  rescue
+    false
   end
   
   # git_cleanup --state resolved
