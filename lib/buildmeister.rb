@@ -67,12 +67,20 @@ class Buildmeister
   end
   
   def new_hotfix
+    generate_timed_branch('hotfix')
+  end
+  
+  def new_experimental
+    generate_timed_branch('experimental')
+  end
+  
+  def generate_timed_branch(prefix)
     branches = local_branches
     now      = Time.now
     count    = 1
     
     loop do
-      new_branch_name = "hotfix-#{now.year}-#{now.month.to_s.rjust 2, '0'}-#{now.day.to_s.rjust 2, '0'}-#{count.to_s.rjust 3, '0'}"
+      new_branch_name = "#{prefix}-#{now.year}-#{now.month.to_s.rjust 2, '0'}-#{now.day.to_s.rjust 2, '0'}-#{count.to_s.rjust 3, '0'}"
       unless branches.include? new_branch_name
         `git checkout -b #{new_branch_name}`
         puts "Created #{new_branch_name}"
