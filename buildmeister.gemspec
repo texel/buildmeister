@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ["History.txt", "Manifest.txt", "README.rdoc"]
   s.files = ["History.txt", "Manifest.txt", "README.rdoc", "Rakefile", "bin/buildmeister", "bin/git_cleanup", "config/buildmeister_config.sample.yml", "lib/buildmeister.rb", "lib/git_cleanup.rb", "test/test_buildmeister.rb"]
   s.has_rdoc = true
-  s.homepage = %q{FIX (url)}
+  s.homepage = %q{http://onehub.com}
   s.rdoc_options = ["--main", "README.txt"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{buildmeister}
