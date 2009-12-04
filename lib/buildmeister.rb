@@ -244,13 +244,17 @@ class Buildmeister
         sleep notification_interval.minutes.to_i
 
         reload_info
+        
+        # Reset the retry count, since we successfully completed this iteration
+        retry_count = RETRY_COUNT
+        
       rescue StandardError => e        
         if retry_count < 1
           puts "Retried #{RETRY_COUNT} times... I give up!"
           raise e
         else
           # Exponential falloff...
-          sleep_time = 50 * (1 / (retry_count / 2))
+          sleep_time = (50.0 * (1 / (retry_count / 2.0))).to_i
           
           puts "Caught error: #{e.class.name}: #{e.message}"
           puts "#{retry_count} more tries... sleeping #{sleep_time} seconds..."
