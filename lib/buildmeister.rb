@@ -6,6 +6,8 @@ require 'optparse'
 class Buildmeister
   attr_accessor :project, :project_name, :bin_groups, :notification_interval
   
+  RETRY_COUNT = 5
+  
   def initialize
     @options = {}
     OptionParser.new do |opts|
@@ -213,32 +215,53 @@ class Buildmeister
   
   def notify
     puts "Starting BuildMeister Notify..."
+    
+    retry_count = RETRY_COUNT
+    
+    loop do
+      begin
+        title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
 
-    loop do  
-      title = "BuildMeister: #{Time.now.strftime("%m/%d %I:%M %p")}"
+        body = ''
 
-      body = ''
+        bin_groups.each do |bin_group|
+          body += "#{bin_group[:name].titleize}\n"
+          body += "---------\n"
 
-      bin_groups.each do |bin_group|
-        body += "#{bin_group[:name].titleize}\n"
-        body += "---------\n"
+          bin_group[:bin_names].each do |bin_name|
+            body += "#{bin_name}: #{display_value(bin_name)}\n"
+          end
 
-        bin_group[:bin_names].each do |bin_name|
-          body += "#{bin_name}: #{display_value(bin_name)}\n"
+          body += "\n"
         end
 
-        body += "\n"
+        puts "Updated notification at #{Time.now.strftime("%m/%d %I:%M %p")}"
+
+        if changed?
+          Buildmeister.post_notification(title, body)   
+        end
+
+        sleep notification_interval.minutes.to_i
+
+        reload_info
+      rescue StandardError => e        
+        if retry_count < 1
+          puts "Retried #{RETRY_COUNT} times... I give up!"
+          raise e
+        else
+          # Exponential falloff...
+          sleep_time = 50 * (1 / (retry_count / 2))
+          
+          puts "Caught error: #{e.class.name}: #{e.message}"
+          puts "#{retry_count} more tries... sleeping #{sleep_time} seconds..."
+          
+          sleep sleep_time
+          
+          retry_count -= 1
+          
+          retry
+        end
       end
-
-      puts "Updated notification at #{Time.now.strftime("%m/%d %I:%M %p")}"
-
-      if changed?
-        Buildmeister.post_notification(title, body)   
-      end
-
-      sleep notification_interval.minutes.to_i
-      
-      reload_info
     end
   end
   
