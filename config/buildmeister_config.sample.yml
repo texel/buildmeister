@@ -1,16 +1,19 @@
-token: Your Lighthouse token
-account: Your Lighthouse account name
-project_name: Your Lighthouse project name
+token: your_token
+account: your_account
 
-bin_groups:
-  - staging:
-    - Ready
-    - Staged
-    - Verified
-    
-  - master:
-    - Ready (Experimental)
-    - Staged (Experimental)
-    - Verified (Experimental)
+projects:
+  - name: Macchiato
+    bins:
+      - Ready
+      - Staged
+      - Verified
+      - Ready (Experimental)
+      - Staged (Experimental)
+      
+  - name: Espresso
+    bins:
+      - Ready
+      - Staged
+      - Verified
 
-notification_interval: 5
+notification_interval: 3

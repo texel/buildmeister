@@ -32,12 +32,12 @@ describe Buildmeister::Bin do
     
     context "in verbose mode" do
       it "should call tickets" do
-        Lighthouse::Bin.any_instance.expects(:tickets).once.returns(ticket_stubs)
+        @b.bin.expects(:tickets).once.returns(ticket_stubs)
         @b.refresh!
       end
       
       it "should set value" do
-        Lighthouse::Bin.any_instance.stubs(:ticket_stubs).returns(ticket_stubs)
+        @b.bin.stubs(:ticket_stubs).returns(ticket_stubs)
         @b.refresh!
         @b.value.should == '1, 2'
       end
@@ -45,13 +45,24 @@ describe Buildmeister::Bin do
       context "after the first refresh" do
         before(:each) do
           @b.value = '1, 2'
-          Lighthouse::Bin.any_instance.stubs(:ticket_stubs).returns(ticket_stubs)
+          @b.bin.stubs(:ticket_stubs).returns(ticket_stubs)
         end
         
         it "should set the last value" do
           @b.refresh!
           @b.last_value.should == '1, 2'
         end
+      end
+    end
+    
+    context "in quiet mode" do
+      before(:each) do
+        @b.mode = :quiet
+      end
+      
+      it "should call tickets_count" do
+        @b.bin.expects(:tickets_count).once.returns(2)
+        @b.refresh!
       end
     end
   end

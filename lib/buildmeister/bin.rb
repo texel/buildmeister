@@ -4,8 +4,8 @@ module Buildmeister
   class Bin
     attr_accessor :bin, :mode, :value, :last_value
     
-    def initialize(bin, mode = :verbose)
-      self.bin  = bin
+    def initialize(lighthouse_bin, mode = :verbose)
+      self.bin  = lighthouse_bin
       self.mode = mode
       
       refresh!
@@ -17,6 +17,8 @@ module Buildmeister
       case mode
       when :verbose
         self.value = bin.tickets.map(&:id).join(', ')
+      when :quiet
+        self.value = bin.tickets_count
       end
     end
     
