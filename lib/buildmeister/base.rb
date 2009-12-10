@@ -7,10 +7,11 @@ module Buildmeister
     
     RETRY_COUNT = 5
     
-    attr_accessor :projects, :notification_interval
+    attr_accessor :projects, :notification_interval, :args
     
     def initialize(*args)
-      @options = {:mode => :verbose}
+      self.args = args
+      @options  = {:mode => :verbose}
             
       OptionParser.new do |opts|
         opts.banner = "Usage: buildmeister notify"

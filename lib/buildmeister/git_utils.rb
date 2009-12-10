@@ -25,7 +25,7 @@ module Buildmeister
       end
     end
 
-    def pull_bin(bin_name = ARGV.shift)
+    def pull_bin(bin_name = args.first)
       raise "Multiple projects are loaded. Please use the -p flag to select one project." if projects.size > 1
       
       project = projects.first
