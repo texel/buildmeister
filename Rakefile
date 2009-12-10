@@ -4,14 +4,20 @@ require 'rubygems'
 require 'hoe'
 require './lib/buildmeister.rb'
 
-Hoe.new('buildmeister', Buildmeister::VERSION) do |p|
-  p.rubyforge_name = 'buildmeister' # if different than lowercase project name
-  p.developer('Leigh Caplan', 'lcaplan@onehub.com')
-end
-
-task :cultivate do
-  system "touch Manifest.txt; rake check_manifest | grep -v \"(in \" | patch"
-  system "rake debug_gem | grep -v \"(in \" > `basename \\`pwd\\``.gemspec"
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |s|
+    s.name = "buildmeister"
+    s.executables = ["buildmeister", "git_cleanup"]
+    s.summary = "Dead simple tools for managing Lighthouse and Git deployment workflow"
+    s.email = "lcaplan@onehub.com"
+    s.homepage = "http://github.com/onehub/buildmeister"
+    s.description = "Dead simple tools for managing Lighthouse and Git deployment workflow"
+    s.authors = ["Leigh Caplan"]
+    s.files =  FileList["[A-Z]*", "{bin,generators,lib,spec}/**/*"]
+  end
+rescue LoadError
+  puts "Jeweler, or one of its dependencies, is not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end
 
 # vim: syntax=Ruby

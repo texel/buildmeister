@@ -63,8 +63,8 @@ describe 'Buildmeister::Project' do
   end
 
   describe "#bins" do
-    it "should search using []" do
-      @p.bins['Ready'].should be_an_instance_of(Buildmeister::Bin)
+    it "should search using named" do
+      @p.bins.named('Ready').should be_an_instance_of(Buildmeister::Bin)
     end
   end
   

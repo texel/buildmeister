@@ -86,9 +86,9 @@ describe Buildmeister::Base do
       Buildmeister::Project.stubs(:new).returns(@project_stub)
     end
     
-    it "should search using []" do
+    it "should search using named" do
       b = Buildmeister::Base.new
-      b.projects['Project'].should == @project_stub
+      b.projects.named('Project').should == @project_stub
     end
   end
 

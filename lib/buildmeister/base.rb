@@ -112,8 +112,21 @@ module Buildmeister
     def move_all
       bin_name = @options[:move_from]
       
+      if projects.size > 1
+        puts "Two projects are loaded (#{projects.map(&:name).join(', ')})"
+        puts "Do you really want to move tickets in all projects? [y/n]"
+        
+        choice = gets
+        
+        if choice.downcase.strip == 'n'
+          puts "aborting..."
+          return
+        end
+      end
+      
       projects.each do |project|
-        project.bins[bin_name].tickets.each do |ticket|
+        project.bins.named(bin_name).tickets.each do |ticket|
+          puts "processing #{project.name}: #{ticket.id}"
           ticket.state = @options[:to_state]
           ticket.save
         end

@@ -29,7 +29,7 @@ module Buildmeister
       raise "Multiple projects are loaded. Please use the -p flag to select one project." if projects.size > 1
       
       project = projects.first
-      bin     = project.bins[bin_name]
+      bin     = project.bins.named(bin_name)
       
       raise ArgumentError, "#{bin_name} is not a valid bin! Must be in #{project.bins.map(&:name).join(', ')}" unless bin
 

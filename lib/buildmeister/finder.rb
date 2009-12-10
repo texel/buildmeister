@@ -1,12 +1,7 @@
 module Buildmeister
-  module Finder
-    def [](name)      
-      case name
-      when String, Symbol
-        find { |e| e.name == name }
-      when Integer
-        super
-      end
+  module Finder    
+    def named(name)
+      find { |e| e.name == name}
     end
   end
 end

@@ -7,7 +7,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
 class GitCleanup
 
   def initialize
-    @config    = Buildmeister.load_config
+    @config = Buildmeister::Base.load_config
     Lighthouse.token    = @config['token']
     Lighthouse.account  = @config['account']
     
