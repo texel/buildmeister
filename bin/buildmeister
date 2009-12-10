@@ -3,12 +3,12 @@
 require File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
 
 begin
-  Buildmeister.new.send ARGV.shift
+  Buildmeister::Base.new.send ARGV.shift
 rescue Interrupt => i
-  Buildmeister.post_notification("Buildmeister Shut Down", "Goodbye!")
+  Buildmeister::Notifier.post("Buildmeister Shut Down", "Goodbye!")
   puts "\rThank you for using Buildmeister!"
 rescue Exception => e
-  Buildmeister.post_notification("Buildmeister Error: #{e.class}", e.message)
+  Buildmeister::Notifier.post("Buildmeister Error: #{e.class}", e.message)
   puts "Quitting Buildmeister due to error: #{e.message}"
   puts e.backtrace
 end

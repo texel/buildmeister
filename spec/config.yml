@@ -1,0 +1,19 @@
+token: 12345
+account: onehub
+
+projects:
+  - name: Macchiato
+    bins:
+      - Ready
+      - Staged
+      - Verified
+      - Ready (Experimental)
+      - Staged (Experimental)
+      
+  - name: Espresso
+    bins:
+      - Ready
+      - Staged
+      - Verified
+
+notification_interval: 3
