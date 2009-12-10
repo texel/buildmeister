@@ -37,7 +37,6 @@ describe Buildmeister::Bin do
       end
       
       it "should set value" do
-        @b.bin.stubs(:ticket_stubs).returns(ticket_stubs)
         @b.refresh!
         @b.value.should == '1, 2'
       end
@@ -45,7 +44,6 @@ describe Buildmeister::Bin do
       context "after the first refresh" do
         before(:each) do
           @b.value = '1, 2'
-          @b.bin.stubs(:ticket_stubs).returns(ticket_stubs)
         end
         
         it "should set the last value" do
@@ -92,6 +90,16 @@ describe Buildmeister::Bin do
       it "should be true" do
         @b.changed?.should be_true
       end
+    end
+  end
+
+  describe "#display" do
+    before(:each) do
+      @b = Buildmeister::Bin.new(stub(:name => 'The Bin', :tickets => ticket_stubs))
+    end
+    
+    it "displays the ticket" do
+      @b.display.should == 'The Bin: 1, 2'
     end
   end
 end

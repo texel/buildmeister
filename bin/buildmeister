@@ -3,7 +3,7 @@
 require File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
 
 begin
-  Buildmeister::Base.new.send ARGV.shift
+  Buildmeister::Base.new(*ARGV).send ARGV.shift
 rescue Interrupt => i
   Buildmeister::Notifier.post("Buildmeister Shut Down", "Goodbye!")
   puts "\rThank you for using Buildmeister!"

@@ -1,5 +1,5 @@
 token: your_token
-account: your_account
+account: your-account
 
 projects:
   - name: Macchiato
