@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'lighthouse'
-require 'activesupport'
+require 'active_support'
 
 $: << File.dirname(__FILE__)
 
