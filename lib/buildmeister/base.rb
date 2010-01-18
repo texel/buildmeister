@@ -106,6 +106,12 @@ module Buildmeister
 
             retry
           end
+        rescue Interrupt => i
+          puts "\rPress ^C again to quit..."
+          
+          sleep 3
+          
+          retry
         end
       end
     end
