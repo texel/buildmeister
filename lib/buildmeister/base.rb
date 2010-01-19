@@ -78,8 +78,9 @@ module Buildmeister
 
           puts "Updated notification at #{Time.now.strftime("%m/%d %I:%M %p")}"
 
-          if changed?
-            Buildmeister::Notifier.post(title, body)   
+          if changed? || @force
+            Buildmeister::Notifier.post(title, body)
+            @force = false
           end
 
           sleep notification_interval.minutes.to_i
@@ -108,9 +109,8 @@ module Buildmeister
           end
         rescue Interrupt => i
           puts "\rPress ^C again to quit..."
-          
           sleep 3
-          
+          @force = true
           retry
         end
       end
