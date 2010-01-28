@@ -111,6 +111,7 @@ module Buildmeister
           puts "\rPress ^C again to quit..."
           sleep 3
           @force = true
+          refresh!
           retry
         end
       end
@@ -120,7 +121,7 @@ module Buildmeister
       bin_name = @options[:move_from]
       
       if projects.size > 1
-        puts "Two projects are loaded (#{projects.map(&:name).join(', ')})"
+        puts "#{projects.size} projects are loaded (#{projects.map(&:name).join(', ')})"
         puts "Do you really want to move tickets in all projects? [y/n]"
         
         choice = gets
