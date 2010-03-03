@@ -14,6 +14,7 @@ begin
     s.homepage = "http://github.com/onehub/buildmeister"
     s.description = "Dead simple tools for managing Lighthouse and Git deployment workflow"
     s.authors = ["Leigh Caplan"]
+    s.add_dependency 'lighthouse-api', '>= 1.10'
     s.files =  FileList["[A-Z]*", "{bin,generators,lib,spec}/**/*"]
   end
 rescue LoadError
