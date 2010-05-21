@@ -2,13 +2,14 @@
 
 module Buildmeister
   class Bin
-    attr_accessor :bin, :mode, :value, :last_value
+    attr_accessor :bin, :mode, :value, :last_value, :annotations
     
     delegate :name, :tickets, :to => :bin
     
-    def initialize(lighthouse_bin, mode = :verbose)
+    def initialize(lighthouse_bin, mode = :verbose, options = {})
       self.bin  = lighthouse_bin
       self.mode = mode
+      self.annotations = options[:annotations] || {}
       
       refresh!
     end
@@ -18,7 +19,13 @@ module Buildmeister
       
       case mode
       when :verbose
-        self.value = bin.tickets.map(&:id).join(', ')
+        self.value = bin.tickets.map do |tkt|
+          str =  "#{tkt.id}"
+          annotations.each do |tag_name, identifier|
+            str << identifier if tkt.tags.include?(tag_name)
+          end
+          str
+        end.join(', ')
       when :quiet
         self.value = bin.tickets_count
       end

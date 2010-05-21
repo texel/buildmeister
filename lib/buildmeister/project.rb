@@ -18,7 +18,7 @@ module Buildmeister
         bin = project_bins.find { |b| b.name == bin_name }
         raise "No bin named #{bin_name}" unless bin 
         
-        bins << Buildmeister::Bin.new(bin, options[:mode])
+        bins << Buildmeister::Bin.new(bin, options[:mode], :annotations => config['annotations'])
       end
     end
     
