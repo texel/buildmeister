@@ -39,7 +39,7 @@ module Buildmeister
       ticket_numbers  = bin.tickets.map { |tkt| tkt.id.to_s }
 
       branches_to_pull = branches.select do |branch_name|
-        ticket_numbers.map { |tkt_number| branch_name =~ /#{tkt_number}/ }.any?
+        ticket_numbers.map { |tkt_number| branch_name =~ /^#{tkt_number}/ }.any?
       end
 
       branches_to_pull.each do |branch|
