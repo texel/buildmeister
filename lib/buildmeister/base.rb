@@ -7,9 +7,11 @@ module Buildmeister
     
     RETRY_COUNT = 5
     
-    attr_accessor :projects, :notification_interval, :command
+    attr_accessor :projects, :notification_interval, :command, :args
     
     def initialize(*args)
+      self.args = args
+      
       @options  = {:mode => :verbose}
             
       OptionParser.new do |opts|
@@ -64,7 +66,7 @@ module Buildmeister
       self.notification_interval = @config['notification_interval']
       
       # Did we pass in a command?
-      self.command = args.first      
+      self.command = args.shift      
     end
     
     def go!
