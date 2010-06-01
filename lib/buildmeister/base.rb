@@ -7,10 +7,9 @@ module Buildmeister
     
     RETRY_COUNT = 5
     
-    attr_accessor :projects, :notification_interval, :args
+    attr_accessor :projects, :notification_interval, :command
     
     def initialize(*args)
-      self.args = args
       @options  = {:mode => :verbose}
             
       OptionParser.new do |opts|
@@ -30,6 +29,16 @@ module Buildmeister
         
         opts.on('-p', '--project PROJECT', 'Use Project') do |p|
           @options[:project] = p
+        end
+        
+        opts.on_tail("-h", "--help", "Show this message") do
+          puts opts
+          exit
+        end
+        
+        if args.empty?
+          puts opts
+          exit
         end
       end.parse!(args)
       
@@ -53,10 +62,17 @@ module Buildmeister
       end
       
       self.notification_interval = @config['notification_interval']
+      
+      # Did we pass in a command?
+      self.command = args.first      
+    end
+    
+    def go!
+      send command if command
     end
     
     def changed?
-      projects.any? &:changed?
+      projects.any?(&:changed?)
     end
     
     def title
@@ -144,7 +160,7 @@ module Buildmeister
     end
     
     def refresh!
-      projects.each &:refresh!
+      projects.each(&:refresh!)
     end
     
     def self.load_config
