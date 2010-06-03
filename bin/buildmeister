@@ -3,15 +3,14 @@
 require File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
 
 begin
-  command = ARGV.shift
-  args    = ARGV.dup
-  ARGV.clear
-  
-  Buildmeister::Base.new(*args).send command
+  bm = Buildmeister::Base.new(*ARGV.dup)
+  bm.go!
 rescue Interrupt => i
-  Buildmeister::Notifier.post("Buildmeister Shut Down", "Goodbye!")
-  puts "\rThank you for using Buildmeister!"
-rescue Exception => e
+  if bm.command == 'notify'
+    Buildmeister::Notifier.post("Buildmeister Shut Down", "Goodbye!")
+    puts "\rThank you for using Buildmeister!"
+  end
+rescue StandardError => e
   Buildmeister::Notifier.post("Buildmeister Error: #{e.class}", e.message)
   puts "Quitting Buildmeister due to error: #{e.message}"
   puts e.backtrace
