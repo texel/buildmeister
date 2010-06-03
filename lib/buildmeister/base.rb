@@ -33,6 +33,10 @@ module Buildmeister
           @options[:project] = p
         end
         
+        opts.on('-b', '--bin-name BIN', 'Summary Bin Name') do |p|
+          @options[:bin_name] = p
+        end
+
         opts.on_tail("-h", "--help", "Show this message") do
           puts opts
           exit
@@ -159,6 +163,40 @@ module Buildmeister
       end
 
       puts "All tickets from bin #{@options[:move_from]} have been moved to #{@options[:to_state]}"
+    end
+    
+    def summary
+      body = ''
+      
+      projects.each do |project|
+        bin = project.bins.detect {|b| b.name =~ /^#{@options[:bin_name]}$/i}
+        
+        unless bin
+          puts "No ticket bin found matching \"#{@options[:bin_name]}\""
+          return 
+        end
+        
+        tickets = bin.tickets.sort_by(&:id)
+        
+        body << "=== #{project.name} ===\n\n" if tickets.length > 0
+        
+        tickets.each do |ticket|
+          body << title = "##{ticket.number} - #{ticket.title}\n"
+          body << "-" * title.length + "\n\n"
+          
+          if ticket.original_body.to_s.strip.empty?
+            body << "(no description)" + "\n" * 4
+          else
+            body << "#{ticket.original_body}"  + "\n" * 4
+          end
+          
+        end
+      end
+      
+      puts body
+      
+      `echo "#{body.gsub('"', '\"')}" | pbcopy`
+      puts "Summary copied to the clipboard"
     end
     
     def refresh!
