@@ -15,11 +15,18 @@ module Buildmeister
       project_bins = project.bins
 
       config['bins'].each do |bin_name|
-        bin = project_bins.find { |b| b.name == bin_name }
+        bin = project_bins.find { |b| b.shared && (b.name == bin_name) }
         raise "No bin named #{bin_name}" unless bin 
         
         bins << Buildmeister::Bin.new(bin, options[:mode], :annotations => config['annotations'])
       end
+      
+      config['personal_bins'].each do |bin_name|
+        bin = project_bins.find { |b| !b.shared && (b.name == bin_name) }
+        raise "No bin named #{bin_name}" unless bin 
+        
+        bins << Buildmeister::Bin.new(bin, options[:mode], :annotations => config['annotations'])
+      end if config['personal_bins']
     end
     
     def display
