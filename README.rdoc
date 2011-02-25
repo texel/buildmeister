@@ -25,6 +25,9 @@ using Lighthouse and Github.
   
   # Clean up git branches on origin
   $ git_cleanup remote
+  
+  # Print a summary of tickets in a bin and copy it to the clipboard
+  $ buildmeister summary -b "Verified"
 
 == Requirements
 
