@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.version = "1.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Leigh Caplan"]
+  s.authors = ["Leigh Caplan", "Brandon Caplan"]
   s.date = %q{2010-10-15}
   s.description = %q{Dead simple tools for managing Lighthouse and Git deployment workflow}
   s.email = %q{lcaplan@onehub.com}
