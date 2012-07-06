@@ -164,6 +164,54 @@ module Buildmeister
 
       puts "All tickets from bin #{@options[:move_from]} have been moved to #{@options[:to_state]}"
     end
+
+    def list_staged_tickets
+      # First, fetch origin to make sure we have all the necessary information
+      system('git fetch origin')
+      shas = `git log master..HEAD --pretty=format:%H`.split
+
+      # Generate an array of arrays - the inner array lists all branches that contain
+      # each of the SHAs listed above
+      contains_info = shas.map do |sha|
+        `git branch -a --contains #{sha}`.split
+      end
+
+      staged_branches = Set.new
+
+      contains_info.each do |branches|
+        branches.each do |branch|
+          # First, sanitize
+          branch.gsub!('remotes/origin/', '')
+
+          # Only match branch names that start with a digit (we're assuming
+          # that these all reference tickets)
+          staged_branches << branch if branch =~ /^\d+/
+        end
+      end
+
+      tickets = staged_branches.to_a.map(&:to_i)
+      puts "Staged: #{tickets.join(',')}"
+
+      tickets
+    end
+
+    def move_staged_tickets
+      unless projects.one?
+        puts "Please specify one project!"
+        return
+      end
+
+      # Grab the actual lighthouse project
+      project = projects.first
+
+      tickets = project.find_tickets(*list_staged_tickets)
+      tickets.each do |ticket|
+        unless ticket.state == 'verified'
+          ticket.state = @options[:to_state]
+          ticket.save
+        end
+      end
+    end
     
     def summary
       body = ''

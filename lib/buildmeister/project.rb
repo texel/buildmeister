@@ -28,6 +28,14 @@ module Buildmeister
         bins << Buildmeister::Bin.new(bin, options[:mode], :annotations => config['annotations'])
       end if config['personal_bins']
     end
+
+    # There's no good way to do this in the Lighthouse API. This is slow, but at least it's
+    # easy to write.
+    def find_tickets(*ids)
+      ids.map do |id|
+        project.tickets(:q => id).first
+      end.compact
+    end
     
     def display
       out = ''
