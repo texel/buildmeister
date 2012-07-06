@@ -217,7 +217,7 @@ module Buildmeister
       body = ''
       
       projects.each do |project|
-        bin = project.bins.detect {|b| b.name =~ /^#{@options[:bin_name]}$/i}
+        bin = project.bins.detect {|b| b.name =~ /^#{Regexp.escape(@options[:bin_name])}$/i}
         
         unless bin
           puts "No ticket bin found matching \"#{@options[:bin_name]}\" in #{project.name}"
