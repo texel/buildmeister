@@ -168,7 +168,7 @@ module Buildmeister
     def list_staged_tickets
       # First, fetch origin to make sure we have all the necessary information
       system('git fetch origin')
-      shas = `git log master..HEAD --pretty=format:%H`.split
+      shas = `git log origin/master..HEAD --pretty=format:%H`.split
 
       # Generate an array of arrays - the inner array lists all branches that contain
       # each of the SHAs listed above
