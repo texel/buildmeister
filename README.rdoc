@@ -10,7 +10,7 @@ using Lighthouse and Github.
 == Features
 
 - Growl notification of updated build status
-- Utility scripts to move batch move tickets
+- Utility scripts to batch move tickets
 - A very handy utility for pruning local and remote git branches
 
 == Examples
@@ -31,12 +31,12 @@ using Lighthouse and Github.
 
 == Requirements
 
-Depends on texel-lighthouse-api, activesupport, and growlnotify.
+Depends on lighthouse, activesupport, and growlnotify.
 
 == Install
 
 - Download and install Growl from http://growl.info/
-- sudo gem install texel-buildmeister
+- sudo gem install buildmeister
 - Use the included config/buildmeister_config.sample.yml file as a guide to creating your own configuration file.
 The file should be called ".buildmeister_config.yml", and be placed in your home directory.
 
