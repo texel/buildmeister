@@ -1,10 +1,10 @@
 require 'rubygems'
 require 'lighthouse'
 require 'active_support'
-require 'lib/core_ext'
 
 $: << File.dirname(__FILE__)
 
+require 'buildmeister/core_ext'
 require 'buildmeister/string_utils'
 require 'buildmeister/git_utils'
 require 'buildmeister/finder'
