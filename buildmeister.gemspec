@@ -4,15 +4,15 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{buildmeister}
-  s.version = "2.0.2"
+  s.name = "buildmeister"
+  s.version = "2.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{Leigh Caplan}]
-  s.date = %q{2012-07-06}
-  s.description = %q{Dead simple tools for managing Lighthouse and Git deployment workflow}
-  s.email = %q{lcaplan@onehub.com}
-  s.executables = [%q{buildmeister}, %q{git_cleanup}]
+  s.authors = ["Leigh Caplan"]
+  s.date = "2013-02-08"
+  s.description = "Dead simple tools for managing Lighthouse and Git deployment workflow"
+  s.email = "lcaplan@onehub.com"
+  s.executables = ["buildmeister", "git_cleanup"]
   s.extra_rdoc_files = [
     "README.rdoc"
   ]
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
     "lib/buildmeister/notifier.rb",
     "lib/buildmeister/project.rb",
     "lib/buildmeister/string_utils.rb",
+    "lib/core_ext.rb",
     "lib/git_cleanup.rb",
     "spec/buildmeister/base_spec.rb",
     "spec/buildmeister/bin_spec.rb",
@@ -38,21 +39,21 @@ Gem::Specification.new do |s|
     "spec/spec.opts",
     "spec/spec_helper.rb"
   ]
-  s.homepage = %q{http://github.com/onehub/buildmeister}
-  s.require_paths = [%q{lib}]
-  s.rubygems_version = %q{1.8.6}
-  s.summary = %q{Dead simple tools for managing Lighthouse and Git deployment workflow}
+  s.homepage = "http://github.com/onehub/buildmeister"
+  s.require_paths = ["lib"]
+  s.rubygems_version = "1.8.24"
+  s.summary = "Dead simple tools for managing Lighthouse and Git deployment workflow"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<lighthouse>, ["~> 2.1.1"])
+      s.add_runtime_dependency(%q<lighthouse>, ["~> 2.1"])
     else
-      s.add_dependency(%q<lighthouse>, ["~> 2.1.1"])
+      s.add_dependency(%q<lighthouse>, ["~> 2.1"])
     end
   else
-    s.add_dependency(%q<lighthouse>, ["~> 2.1.1"])
+    s.add_dependency(%q<lighthouse>, ["~> 2.1"])
   end
 end
 
