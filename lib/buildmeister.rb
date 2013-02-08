@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'lighthouse'
 require 'active_support'
+require 'lib/core_ext'
 
 $: << File.dirname(__FILE__)
 
