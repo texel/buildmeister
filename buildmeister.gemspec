@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "buildmeister"
-  s.version = "2.0.5"
+  s.version = "2.0.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Leigh Caplan"]
@@ -26,12 +26,12 @@ Gem::Specification.new do |s|
     "lib/buildmeister.rb",
     "lib/buildmeister/base.rb",
     "lib/buildmeister/bin.rb",
+    "lib/buildmeister/core_ext.rb",
     "lib/buildmeister/finder.rb",
     "lib/buildmeister/git_utils.rb",
     "lib/buildmeister/notifier.rb",
     "lib/buildmeister/project.rb",
     "lib/buildmeister/string_utils.rb",
-    "lib/core_ext.rb",
     "lib/git_cleanup.rb",
     "spec/buildmeister/base_spec.rb",
     "spec/buildmeister/bin_spec.rb",
