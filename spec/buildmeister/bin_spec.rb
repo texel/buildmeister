@@ -1,33 +1,33 @@
 require 'spec_helper'
 
 describe Buildmeister::Bin do
-  def ticket_stubs
+  let(:ticket_stubs) do
     [stub('ticket_1', :id => 1), stub('ticket_2', :id => 2)]
   end
   
-  before(:each) do
-    Lighthouse::Bin.any_instance.stubs(:tickets).returns(ticket_stubs)
+  let(:bin_stub) do
+    stub(:tickets => ticket_stubs)
   end
   
   describe "#new" do
     it "should create a new instance" do
-      b = Buildmeister::Bin.new(Lighthouse::Bin.new)
+      b = Buildmeister::Bin.new(bin_stub)
     end
 
     it "should default to verbose mode" do
-      b = Buildmeister::Bin.new(Lighthouse::Bin.new)
+      b = Buildmeister::Bin.new(bin_stub)
       b.mode.should == :verbose
     end
     
     it "should refresh" do
       Buildmeister::Bin.any_instance.expects(:refresh!).once
-      b = Buildmeister::Bin.new(Lighthouse::Bin.new)
+      b = Buildmeister::Bin.new(bin_stub)
     end
   end
   
   describe "#refresh!" do
     before(:each) do
-      @b = Buildmeister::Bin.new(Lighthouse::Bin.new)
+      @b = Buildmeister::Bin.new(bin_stub)
     end
     
     context "in verbose mode" do

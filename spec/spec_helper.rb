@@ -1,11 +1,13 @@
-require 'spec/autorun'
+Bundler.require(:default, :test)
+require 'rspec/autorun'
 require 'buildmeister'
 require 'fakeweb'
 require 'timecop'
+require 'mocha/api'
 
 FakeWeb.allow_net_connect = false
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.mock_with :mocha
 end
 

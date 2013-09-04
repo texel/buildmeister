@@ -39,20 +39,19 @@ module Buildmeister
 
         opts.on_tail("-h", "--help", "Show this message") do
           puts opts
-          exit
+          exit_app
         end
         
         if args.empty?
           puts opts
-          exit
+          exit_app
         end
       end.parse!(args)
       
       # Lighthouse setup
       @config = Buildmeister::Base.load_config
       
-      Lighthouse.account = @config['account']
-      Lighthouse.token   = @config['token']
+      @options[:credentials] = {:account => @config['account'], :token => @config['token']}
       
       self.projects = []
       
@@ -253,6 +252,10 @@ module Buildmeister
     
     def self.load_config
       YAML.load_file(File.expand_path('~/.buildmeister_config.yml'))
+    end
+    
+    def exit_app
+      exit
     end
   end
 end

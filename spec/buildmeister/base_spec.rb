@@ -6,10 +6,19 @@ describe Buildmeister::Base do
     @project_stub = stub(:name => 'Project', :bins => [stub(), stub()])
     Buildmeister::Project.stubs(:new).returns(@project_stub)
   end  
+
+  class Buildmeister::Base
+    # In the real app, this should exit, but
+    # that makes testing difficult.
+    # TODO: Refactor this entire thing.
+    def exit_app 
+    end
+  end
+
+  let(:b) { Buildmeister::Base.new }
   
   describe '#new' do
     it "should create a new instance" do
-      b = Buildmeister::Base.new
       b.should be_an_instance_of(Buildmeister::Base)
     end
     
@@ -45,23 +54,19 @@ describe Buildmeister::Base do
     
     it "should set the Lighthouse account from config" do
       config = load_test_config
-      b = Buildmeister::Base.new
       Lighthouse.account.should == config['account']
     end
     
     it "should set the Lighthouse token from config" do
       config = load_test_config
-      b = Buildmeister::Base.new
       Lighthouse.token.should == config['token']
     end
     
     it "should set up the projects" do
-      b = Buildmeister::Base.new
       b.projects.should == [@project_stub, @project_stub]
     end
     
     it "should set the notification interval" do
-      b = Buildmeister::Base.new
       b.notification_interval.should == 3
     end
   end
@@ -74,7 +79,6 @@ describe Buildmeister::Base do
       end
       
       it "should be true" do
-        b = Buildmeister::Base.new
         b.changed?.should be_true
       end
     end
