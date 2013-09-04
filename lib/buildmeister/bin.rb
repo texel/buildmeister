@@ -3,8 +3,10 @@
 module Buildmeister
   class Bin
     attr_accessor :bin, :mode, :value, :last_value, :annotations
+
+    extend Forwardable
     
-    delegate :name, :tickets, :to => :bin
+    delegate [:name, :tickets] => :bin
     
     def initialize(lighthouse_bin, mode = :verbose, options = {})
       self.bin  = lighthouse_bin

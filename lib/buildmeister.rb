@@ -1,6 +1,5 @@
 require 'rubygems'
-require 'lighthouse'
-require 'active_support'
+require 'rest-client'
 
 $: << File.dirname(__FILE__)
 
