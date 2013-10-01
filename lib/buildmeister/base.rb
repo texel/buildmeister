@@ -1,18 +1,9 @@
 require 'optparse'
 
 module Buildmeister
-  class Base
-    include StringUtils
-    include GitUtils
-    
-    RETRY_COUNT = 5
-    
-    attr_accessor :projects, :notification_interval, :command, :args
-    
+  class Launcher
     def initialize(*args)
-      self.args = args
-      
-      @options  = {:mode => :verbose}
+      @options = {:mode => :verbose}
             
       OptionParser.new do |opts|
         opts.banner = "Usage: buildmeister notify"
@@ -48,6 +39,27 @@ module Buildmeister
         end
       end.parse!(args)
       
+      @options[:command] = args.shift      
+
+      Base.new(@options)
+    end
+    
+    def exit_app
+      exit
+    end
+  end
+
+  class Base
+    include StringUtils
+    include GitUtils
+    
+    RETRY_COUNT = 5
+    
+    attr_accessor :projects, :notification_interval, :command, :args
+    
+    def initialize(options = {})
+      @options = options
+            
       # Lighthouse setup
       @config = Buildmeister::Base.load_config
       
@@ -59,7 +71,7 @@ module Buildmeister
       
       if @options[:project]
         @config['projects'] = @config['projects'].select { |p| p['name'] == @options[:project] } 
-        raise "#{@options[:project]} did not match any projects in the config file" if @config['projects'].blank?
+        raise "#{@options[:project]} did not match any projects in the config file" if (@config['projects'] || []).empty?
       end
       
       @config['projects'].each do |project|
@@ -69,7 +81,7 @@ module Buildmeister
       self.notification_interval = @config['notification_interval']
       
       # Did we pass in a command?
-      self.command = args.shift      
+      self.command = options[:command]
     end
     
     def go!
@@ -252,10 +264,6 @@ module Buildmeister
     
     def self.load_config
       YAML.load_file(File.expand_path('~/.buildmeister_config.yml'))
-    end
-    
-    def exit_app
-      exit
     end
   end
 end

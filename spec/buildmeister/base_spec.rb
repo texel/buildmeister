@@ -1,5 +1,39 @@
 require 'spec_helper'
 
+describe Buildmeister::Launcher do
+  it "should set quiet mode if passed -q" do
+    pending
+    b = Buildmeister::Launcher.new('-q')
+    b.instance_variable_get(:@options)[:mode].should == :quiet
+  end
+
+  it "should set move_from if passed -f" do
+    pending
+    b = Buildmeister::Launcher.new('-f', 'Cool Bin')
+    b.instance_variable_get(:@options)[:move_from].should == 'Cool Bin'
+  end
+
+  it "should set to_state if passed -t" do
+    pending
+    b = Buildmeister::Launcher.new('-t', 'staged')
+    b.instance_variable_get(:@options)[:to_state].should == 'staged'
+  end
+
+  context "passed the -p flag" do
+     let(:b) { Buildmeister::Launcher.new('-p', 'Macchiato') }
+
+    it "should set the project" do
+      pending
+      b.instance_variable_get(:@options)[:project].should == 'Macchiato'
+    end
+
+    it "should only load the specified project" do
+      pending
+      b.projects.size.should == 1
+    end
+  end
+end
+
 describe Buildmeister::Base do
   before(:each) do
     Buildmeister::Base.stubs(:load_config).returns(load_test_config)
@@ -7,59 +41,18 @@ describe Buildmeister::Base do
     Buildmeister::Project.stubs(:new).returns(@project_stub)
   end  
 
-  class Buildmeister::Base
-    # In the real app, this should exit, but
-    # that makes testing difficult.
-    # TODO: Refactor this entire thing.
-    def exit_app 
-    end
-  end
-
   let(:b) { Buildmeister::Base.new }
   
   describe '#new' do
-    it "should create a new instance" do
-      b.should be_an_instance_of(Buildmeister::Base)
-    end
-    
-    it "should set quiet mode if passed -q" do
-      b = Buildmeister::Base.new('-q')
-      b.instance_variable_get(:@options)[:mode].should == :quiet
-    end
-    
-    it "should set move_from if passed -f" do
-      b = Buildmeister::Base.new('-f', 'Cool Bin')
-      b.instance_variable_get(:@options)[:move_from].should == 'Cool Bin'
-    end
-    
-    it "should set to_state if passed -t" do
-      b = Buildmeister::Base.new('-t', 'staged')
-      b.instance_variable_get(:@options)[:to_state].should == 'staged'
-    end
-    
-    context "passed the -p flag" do
-      before(:each) do
-        @b = Buildmeister::Base.new('-p', 'Macchiato')
-      end
-      
-      it "should set the project" do
-        @b.instance_variable_get(:@options)[:project].should == 'Macchiato'
-      end
-      
+    context "passing in a project" do
       it "should only load the specified project" do
-        @b.projects.size.should == 1
+        b = Buildmeister::Base.new(project: 'Macchiato')
+        b.projects.size.should == 1
       end
     end
 
-    
-    it "should set the Lighthouse account from config" do
-      config = load_test_config
-      Lighthouse.account.should == config['account']
-    end
-    
-    it "should set the Lighthouse token from config" do
-      config = load_test_config
-      Lighthouse.token.should == config['token']
+    it "should create a new instance" do
+      b.should be_an_instance_of(Buildmeister::Base)
     end
     
     it "should set up the projects" do
@@ -98,7 +91,7 @@ describe Buildmeister::Base do
 
   describe "title" do
     it "should look like this" do
-      Timecop.freeze(Time.parse('1/1/2010 9am')) do
+      Timecop.freeze(Time.new(2010, 1, 1, 9)) do
         b = Buildmeister::Base.new
         b.title.should == 'Buildmeister: 01/01 09:00 AM'
       end
