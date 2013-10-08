@@ -111,6 +111,4 @@ describe Buildmeister::Base do
       @b.divider("=", 5).should == '====='
     end
   end
-  
-  
 end
