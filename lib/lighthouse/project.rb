@@ -1,16 +1,15 @@
-module Buildmeister
-  class Project < RestClient::Resource
-    include StringUtils
+module Lighthouse
+  class Project
+    include Buildmeister::StringUtils
     
-    attr_accessor :project, :name, :bins
+    attr_accessor :id, :name, :bins, :resource
         
-    def initialize(config, options = {})
-      url = "https://#{config['account']}.lighthouseapp.com/projects"
-      headers = {'X-LighthouseToken' => config['token']}
+    def initialize(resource, attributes)
+      @id   = attributes['id']
+      @name = attributes['name']
 
-      super(url, headers: headers)
+      @resource = resource
 
-      self.name = config['name']
       # self.bins = []
       
       # bins.extend Finder
@@ -53,11 +52,11 @@ module Buildmeister
     end
     
     def refresh!
-      bins.each &:refresh!
+      bins.each(&:refresh!)
     end
     
     def changed?
-      bins.any? &:changed?
+      bins.any?(&:changed?)
     end
   end
 end

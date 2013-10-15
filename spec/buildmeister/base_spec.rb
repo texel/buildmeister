@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+
 describe Buildmeister::Launcher do
   it "should set quiet mode if passed -q" do
     pending
