@@ -29,6 +29,10 @@ module Buildmeister
           @options[:bin_name] = p
         end
 
+        opts.on('-c', '--compare-branch BRANCH', 'Compare From Branch') do |c|
+          @options[:compare_branch] = c || 'master'
+        end
+
         opts.on_tail("-h", "--help", "Show this message") do
           puts opts
           exit_app
@@ -45,7 +49,7 @@ module Buildmeister
       Base.new(@options)
     end
     
-    def exit_app
+    def self.exit_app
       exit
     end
   end
@@ -179,7 +183,7 @@ module Buildmeister
     def list_staged_tickets
       # First, fetch origin to make sure we have all the necessary information
       system('git fetch origin')
-      shas = `git log origin/master..HEAD --pretty=format:%H`.split
+      shas = `git log origin/#{@options[:compare_branch]}..HEAD --pretty=format:%H`.split
 
       # Generate an array of arrays - the inner array lists all branches that contain
       # each of the SHAs listed above
