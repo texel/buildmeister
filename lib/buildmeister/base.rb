@@ -1,4 +1,5 @@
 require 'optparse'
+require 'yaml'
 
 module Buildmeister
   class Launcher

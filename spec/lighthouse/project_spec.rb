@@ -1,28 +1,15 @@
 require 'spec_helper'
 
-describe Lighthouse::Project, :focus => true do
-  def valid_config
-    @valid_config ||= load_test_config['projects'].first
+describe Lighthouse::Project do
+  let(:resource) { stub(:[] => stub) } 
+  let(:attributes) do
+    {'id' => '123', 'name' => 'Project'}
   end
-  
-  def project_stub
-    stub(:name => valid_config['name'], :bins => valid_config['bins'].map { |b| stub({:name => b}) })
+  let(:project) do
+    Lighthouse::Project.new(resource, attributes)
   end
-  
-  # before(:each) do
-    # Lighthouse::Project.stubs(:find).returns([project_stub])
-    # Lighthouse::Project.new(valid_config)
-  # end
   
   describe "#new" do    
-    let(:resource) { stub() } 
-    let(:attributes) do
-      {'id' => '123', 'name' => 'Project'}
-    end
-    let(:project) do
-      Lighthouse::Project.new(resource, attributes)
-    end
-
     it "should create new given a valid config" do
       project.should be_an_instance_of(Lighthouse::Project)
     end
@@ -38,59 +25,42 @@ describe Lighthouse::Project, :focus => true do
     it "should set the resource" do
       project.resource.should == resource
     end
-    
-    # it "should set up the appropriate number of bins" do
-      # @p.should have(valid_config['bins'].size).bins
-    # end
-    
-    # it "should set up Buildmeister::Bin objects" do
-      # @p.bins.all? { |b| b.is_a?(Buildmeister::Bin) }.should be_true
-    # end
-
-    # it "should keep bins in order" do
-      # @p.bins.map(&:name).should == ['Ready', 'Staged', 'Verified', 'Ready (Experimental)', 'Staged (Experimental)']
-    # end
-  end
-  
-  describe "#changed?" do
-    # context "with changed bins" do
-      # before(:each) do
-        # @p.bins.each { |b| b.stubs(:changed?).returns(true) }
-      # end
-      
-      # it "should be true" do
-        # @p.changed?.should be_true
-      # end
-    # end
-    
-    # context "with no changed bins" do
-      # before(:each) do
-        # @p.bins.each { |b| b.stubs(:changed?).returns(false) }
-      # end
-      
-      # it "should be false" do
-        # @p.changed?.should be_false
-      # end
-    # end    
   end
 
   describe "#bins" do
-    # it "should search using named" do
-      # @p.bins.named('Ready').should be_an_instance_of(Buildmeister::Bin)
-    # end
+    let(:bins_response) do
+      File.read('spec/support/bins.json')
+    end
+
+    before { project.stubs(:bins_resource).returns(stub(:get => bins_response)) }
+
+    it "should succeed" do
+      project.bins
+    end
+
+    it "should list the bins" do
+      bin = project.bins.first
+      bin.class.should == Lighthouse::Bin
+    end
   end
   
-  describe "#display" do
-    # it "should display the bins" do
-      # @p.display.should == <<-STRING_CHEESE
-# Macchiato
-# ----------
-# Ready: 
-# Staged: 
-# Verified: 
-# Ready (Experimental): 
-# Staged (Experimental): 
-# STRING_CHEESE
-    # end
+  describe "#tickets" do
+    let(:tickets_response) do
+      File.read('spec/support/tickets.json')
+    end
+
+    before { project.stubs(:tickets_resource).returns(stub(:get => tickets_response)) }
+
+    it "should succeed" do
+      project.tickets
+    end
+
+    it "should list the tickets" do
+      project.tickets.all? { |t| t.is_a?(Lighthouse::Ticket) }.should be_true
+    end
+  end
+
+  describe "#find_tickets" do
+    it "should be implemented"
   end
 end

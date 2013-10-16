@@ -67,7 +67,7 @@ describe Buildmeister::Bin do
   
   describe "#changed?" do
     before(:each) do
-      @b = Buildmeister::Bin.new(Lighthouse::Bin.new)
+      @b = Buildmeister::Bin.new(Lighthouse::Bin.new(stub(get: []), {}))
     end
     
     context "with identical values" do

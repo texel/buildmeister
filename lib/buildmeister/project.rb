@@ -1,35 +1,32 @@
 module Buildmeister
-  class Project < RestClient::Resource
+  class Project
     include StringUtils
     
     attr_accessor :project, :name, :bins
         
     def initialize(config, options = {})
-      url = "https://#{config['account']}.lighthouseapp.com/projects"
-      headers = {'X-LighthouseToken' => config['token']}
-
-      super(url, headers: headers)
-
       self.name = config['name']
-      # self.bins = []
+      self.bins = []
       
-      # bins.extend Finder
+      bins.extend Finder
       
-      # project_bins = bins
+      self.project = Lighthouse::Project.find(:all).find { |p| p.name == self.name }
 
-      # config['bins'].each do |bin_name|
-        # bin = project_bins.find { |b| b.name == bin_name }
-        # raise "No bin named #{bin_name}" unless bin 
+      project_bins = project.bins
+
+      config['bins'].each do |bin_name|
+        bin = project_bins.find { |b| b.name == bin_name }
+        raise "No bin named #{bin_name}" unless bin 
         
-        # bins << Buildmeister::Bin.new(bin, options[:mode], :annotations => config['annotations'])
-      # end
+        bins << Buildmeister::Bin.new(bin, options[:mode], :annotations => config['annotations'])
+      end
       
-      # config['personal_bins'].each do |bin_name|
-        # bin = project_bins.find { |b| !b.shared && (b.name == bin_name) }
-        # raise "No bin named #{bin_name}" unless bin 
+      config['personal_bins'].each do |bin_name|
+        bin = project_bins.find { |b| !b.shared && (b.name == bin_name) }
+        raise "No bin named #{bin_name}" unless bin 
         
-        # bins << Buildmeister::Bin.new(bin, options[:mode], :annotations => config['annotations'])
-      # end if config['personal_bins']
+        bins << Buildmeister::Bin.new(bin, options[:mode], :annotations => config['annotations'])
+      end if config['personal_bins']
     end
 
     # There's no good way to do this in the Lighthouse API. This is slow, but at least it's

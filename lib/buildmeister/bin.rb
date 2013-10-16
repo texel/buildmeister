@@ -1,4 +1,5 @@
 # Wraps Lighthouse::Bin and keeps track of state
+require 'forwardable'
 
 module Buildmeister
   class Bin

@@ -2,4 +2,5 @@
 *.gem
 *.gemspec
 .rspec
+.rvmrc
 test_scripts
