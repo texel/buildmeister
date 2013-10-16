@@ -46,8 +46,9 @@ module Lighthouse
       with_json_response( tickets_resource.get(params: {q: query}, accept: 'json') ) do |r|
         (r['tickets'] || []).map do |t|
           attrs = t['ticket']  
+          id = attrs['number']
           
-          Lighthouse::Ticket.new(attrs)
+          Lighthouse::Ticket.new(tickets_resource[id], attrs)
         end
       end
     end
@@ -56,7 +57,7 @@ module Lighthouse
     # easy to write.
     def find_tickets(*ids)
       ids.map do |id|
-        project.tickets(:q => id).first
+        tickets(id).first
       end.compact
     end
     

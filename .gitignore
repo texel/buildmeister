@@ -3,4 +3,5 @@
 *.gemspec
 .rspec
 .rvmrc
+pkg
 test_scripts

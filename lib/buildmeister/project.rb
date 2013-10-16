@@ -33,7 +33,7 @@ module Buildmeister
     # easy to write.
     def find_tickets(*ids)
       ids.map do |id|
-        project.tickets(:q => id).first
+        project.tickets(id).first
       end.compact
     end
     

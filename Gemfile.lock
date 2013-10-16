@@ -1,9 +1,7 @@
 PATH
   remote: .
   specs:
-    buildmeister (3.0.0)
-      jeweler
-      rake
+    buildmeister (3.0.1)
       rest-client (~> 1.6.7)
 
 GEM
