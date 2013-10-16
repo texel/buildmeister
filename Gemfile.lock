@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    buildmeister (2.0.6)
+    buildmeister (3.0.0)
       buildmeister
       jeweler
       rake
