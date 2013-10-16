@@ -23,7 +23,7 @@ module Buildmeister
       case mode
       when :verbose
         self.value = bin.tickets.map do |tkt|
-          str =  "#{tkt.id}"
+          str = "#{tkt.id}"
           annotations.each do |tag_name, identifier|
             str << identifier if tkt.tags.include?(tag_name)
           end

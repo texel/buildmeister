@@ -3,7 +3,7 @@ require 'yaml'
 
 module Buildmeister
   class Launcher
-    def initialize(*args)
+    def self.launch(*args)
       @options = {:mode => :verbose}
             
       OptionParser.new do |opts|
@@ -62,9 +62,8 @@ module Buildmeister
       @options = options
             
       # Lighthouse setup
-      @config = Buildmeister::Base.load_config
-      
-      @options[:credentials] = {:account => @config['account'], :token => @config['token']}
+      @config  = Buildmeister::Base.load_config
+      @account = Lighthouse::Account.new(@config['account'], @config['token'])
       
       self.projects = []
       
@@ -75,8 +74,8 @@ module Buildmeister
         raise "#{@options[:project]} did not match any projects in the config file" if (@config['projects'] || []).empty?
       end
       
-      @config['projects'].each do |project|
-        self.projects << Buildmeister::Project.new(project, @options)
+      @config['projects'].each do |project_name|
+        self.projects << Buildmeister::Project.new(project_name, @account, @options)
       end
       
       self.notification_interval = @config['notification_interval']
@@ -117,7 +116,7 @@ module Buildmeister
             @force = false
           end
 
-          sleep notification_interval.minutes.to_i
+          sleep notification_interval * 60
 
           refresh!
 

@@ -1,9 +1,11 @@
 module Lighthouse
   class Bin
+    include Buildmeister::JSONUtils
+
     attr_reader :id, :name, :query, :tickets_count
 
-    def initialize(tickets_resource, attrs)
-      @tickets_resource = tickets_resource
+    def initialize(project, attrs)
+      @project = project
 
       @name  = attrs['name']
       @id    = attrs['id']
@@ -13,7 +15,7 @@ module Lighthouse
     end
 
     def tickets
-      @tickets_resource.get(params: {q: @query}, accept: 'json')  
+      @project.tickets(@query)
     end
   end
 end

@@ -3,7 +3,7 @@
 require File.expand_path(File.dirname(__FILE__) + "/../lib/buildmeister")
 
 begin
-  bm = Buildmeister::Launcher.new(*ARGV.dup)
+  bm = Buildmeister::Launcher.launch(*ARGV.dup)
   bm.go!
 rescue Interrupt => i
   if bm.command == 'notify'

@@ -37,14 +37,14 @@ module Lighthouse
         r['ticket_bins'].map do |b|
           attrs = b['ticket_bin']
 
-          Lighthouse::Bin.new(tickets_resource, attrs)
+          Lighthouse::Bin.new(self, attrs)
         end
       end.tap { |a| a.extend(Buildmeister::Finder) }
     end
 
     def tickets(query = "")
       with_json_response( tickets_resource.get(params: {q: query}, accept: 'json') ) do |r|
-        r['tickets'].map do |t|
+        (r['tickets'] || []).map do |t|
           attrs = t['ticket']  
           
           Lighthouse::Ticket.new(attrs)

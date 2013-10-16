@@ -4,13 +4,13 @@ module Buildmeister
     
     attr_accessor :project, :name, :bins
         
-    def initialize(config, options = {})
+    def initialize(config, lighthouse_account, options = {})
       self.name = config['name']
       self.bins = []
       
       bins.extend Finder
       
-      self.project = Lighthouse::Project.find(:all).find { |p| p.name == self.name }
+      self.project = lighthouse_account.projects.named(name)
 
       project_bins = project.bins
 
