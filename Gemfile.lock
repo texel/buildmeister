@@ -2,7 +2,6 @@ PATH
   remote: .
   specs:
     buildmeister (3.0.0)
-      buildmeister
       jeweler
       rake
       rest-client (~> 1.6.7)
