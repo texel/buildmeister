@@ -4,7 +4,7 @@ require 'yaml'
 module Buildmeister
   class Launcher
     def self.launch(*args)
-      @options = {:mode => :verbose}
+      @options = {:mode => :verbose, :compare_branch => 'master'}
             
       OptionParser.new do |opts|
         opts.banner = "Usage: buildmeister notify"
@@ -30,7 +30,7 @@ module Buildmeister
         end
 
         opts.on('-c', '--compare-branch BRANCH', 'Compare From Branch') do |c|
-          @options[:compare_branch] = c || 'master'
+          @options[:compare_branch] = c
         end
 
         opts.on_tail("-h", "--help", "Show this message") do
